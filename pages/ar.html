@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -7,49 +8,286 @@
 
   <link rel="stylesheet" href="../css/global.css" />
   <link rel="stylesheet" href="../css/ar.css" />
-  <link rel="stylesheet" href="../css/transition.css" />
   <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
 
   <style>
-    /* Additional styles for test mode */
-    #test-mode-btn {
-      background: rgba(255,255,255,0.15) !important;
-      color: white !important;
-      border: 1px solid rgba(255,255,255,0.3) !important;
-      padding: 6px 12px !important;
-      border-radius: 20px !important;
-      font-size: 13px !important;
-      font-weight: 700 !important;
-      cursor: pointer !important;
-      font-family: var(--font-body) !important;
-      transition: background 0.2s !important;
-      text-decoration: none !important;
-      display: inline-flex !important;
-      align-items: center !important;
-      gap: 4px !important;
+    /* ── TOP BAR ─────────────────────────────────────────── */
+    #top-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: rgba(0,0,0,0.45);
     }
 
-    #test-mode-btn:hover {
-      background: rgba(255,255,255,0.25) !important;
+    #top-bar a, #test-mode-btn {
+      color: white;
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      background: rgba(255,255,255,0.15);
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.3);
+      cursor: pointer;
+      transition: background 0.2s;
     }
+
+    #top-bar a:hover, #test-mode-btn:hover {
+      background: rgba(255,255,255,0.25);
+    }
+
+    #top-bar .logo-img { height: 32px; width: auto; }
+
+    /* ── SCANNING HINT ───────────────────────────────────── */
+    #hint {
+      position: fixed;
+      top: 62px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 200;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 20px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.2);
+      white-space: nowrap;
+      transition: opacity 0.5s;
+    }
+
+    /* ── AR SCENE ────────────────────────────────────────── */
+    #ar-container {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+    }
+
+    /* ── BOTTOM CHAT PANEL ───────────────────────────────── */
+    /* Floats above the AR camera — camera stays fully visible */
+    #chat-panel {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.97);
+      border-radius: 24px 24px 0 0;
+      border-top: 3px solid var(--coral);
+      padding: 14px 16px 20px;
+      max-height: 52vh;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 -8px 32px rgba(0,0,0,0.15);
+    }
+
+    #chat-panel.show { display: flex; }
+
+    /* drag handle */
+    #chat-panel::before {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 4px;
+      background: rgba(0,0,0,0.15);
+      border-radius: 2px;
+      margin: 0 auto 4px;
+      flex-shrink: 0;
+    }
+
+    .chat-panel-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .chat-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--coral);
+      background: var(--cream);
+    }
+
+    .chat-header-info h3 {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--dark);
+      margin: 0;
+    }
+
+    .chat-status {
+      font-size: 11px;
+      color: #6BCB77;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      background: #6BCB77;
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%,100% { opacity: 1; }
+      50%      { opacity: 0.4; }
+    }
+
+    .chat-close-btn {
+      margin-left: auto;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #f0f0f0;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.15s;
+    }
+
+    .chat-close-btn:active { background: var(--coral); color: white; }
+
+    #chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 2px 0;
+    }
+
+    .message {
+      max-width: 80%;
+      padding: 8px 12px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.5;
+      font-family: var(--font-body);
+    }
+
+    .message.user {
+      align-self: flex-end;
+      background: var(--coral);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .message.assistant {
+      align-self: flex-start;
+      background: #F0F0F0;
+      color: var(--dark);
+      border-bottom-left-radius: 4px;
+    }
+
+    .message.typing { color: #aaa; font-style: italic; }
+
+    #chat-presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .preset-btn {
+      background: #FFF8E1;
+      color: #92620A;
+      border: 1.5px solid var(--yellow);
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-family: var(--font-body);
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+
+    .preset-btn:active { background: var(--yellow); }
+
+    #chat-input-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    #chat-input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 2px solid #ddd;
+      border-radius: 20px;
+      font-size: 14px;
+      font-family: var(--font-body);
+      outline: none;
+      background: #fafafa;
+      transition: border-color 0.2s;
+    }
+
+    #chat-input:focus { border-color: var(--coral); }
+
+    #chat-send {
+      padding: 10px 18px;
+      background: var(--coral);
+      color: white;
+      border: none;
+      border-radius: 20px;
+      font-size: 14px;
+      font-family: var(--font-body);
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+      flex-shrink: 0;
+    }
+
+    #chat-send:active { background: #e05555; }
+
+    /* ── TEST MODE PANEL ─────────────────────────────────── */
+    #test-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(4px);
+      z-index: 250;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+
+    #test-backdrop.show { opacity: 1; pointer-events: auto; }
 
     #test-mode-panel {
       position: fixed;
       top: 70px;
       left: 50%;
+      transform: translateX(-50%) translateY(-8px) scale(0.92);
       z-index: 300;
       background: rgba(255,255,255,0.98);
-      backdrop-filter: blur(10px);
       border-radius: 24px;
       padding: 24px;
       box-shadow: 0 20px 40px rgba(0,0,0,0.2);
       display: none;
-      max-width: 360px;
+      max-width: 340px;
       width: 90%;
       border: 2px solid var(--dark);
       opacity: 0;
-      transform: translateX(-50%) translateY(-8px) scale(0.92);
       pointer-events: none;
       transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
@@ -62,54 +300,43 @@
     }
 
     .test-panel-title {
-      margin-bottom: 20px;
       font-family: var(--font-display);
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 800;
       color: var(--dark);
       text-align: center;
+      margin-bottom: 16px;
     }
 
     .test-career-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-bottom: 20px;
+      gap: 10px;
+      margin-bottom: 16px;
     }
 
     .test-career-card {
-      padding: 16px 10px;
+      padding: 14px 8px;
       border: 2px solid var(--dark);
-      border-radius: 16px;
+      border-radius: 14px;
       background: white;
       cursor: pointer;
-      transition: all 0.2s;
-      font-family: var(--font-body);
-      color: var(--dark);
-      box-shadow: 4px 4px 0 var(--dark);
+      box-shadow: 3px 3px 0 var(--dark);
       text-align: center;
+      transition: all 0.15s;
     }
 
-    .test-career-card:hover {
-      transform: translate(-2px, -2px);
-      box-shadow: 6px 6px 0 var(--dark);
-      background: #fafafa;
+    .test-career-card:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 var(--dark);
     }
 
-    .test-career-emoji {
-      font-size: 28px;
-      display: block;
-      margin-bottom: 8px;
-    }
-
-    .test-career-name {
-      font-size: 14px;
-      font-weight: 700;
-    }
+    .test-career-emoji { font-size: 26px; display: block; margin-bottom: 6px; }
+    .test-career-name  { font-size: 13px; font-weight: 700; color: var(--dark); }
 
     .test-panel-close {
       width: 100%;
-      padding: 12px;
+      padding: 10px;
       background: #f0f0f0;
       border: 2px solid var(--dark);
       border-radius: 20px;
@@ -121,153 +348,34 @@
       transition: all 0.15s;
     }
 
-    .test-panel-close:hover {
+    .test-panel-close:active {
       background: var(--dark);
       color: white;
-      transform: translate(-1px, -1px);
-      box-shadow: 4px 4px 0 var(--dark);
-    }
-    
-    .test-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.3);
-      backdrop-filter: blur(4px);
-      z-index: 250;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      pointer-events: none;
-    }
-    
-    .test-backdrop.show {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    /* Staggered card animations (like globe dropdown) */
-    .test-career-card {
-      animation: careerCardPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
-    }
-    #test-mode-panel.show .test-career-card:nth-child(1) { animation-delay: 0.02s; }
-    #test-mode-panel.show .test-career-card:nth-child(2) { animation-delay: 0.06s; }
-    #test-mode-panel.show .test-career-card:nth-child(3) { animation-delay: 0.10s; }
-    #test-mode-panel.show .test-career-card:nth-child(4) { animation-delay: 0.14s; }
-    #test-mode-panel.show .test-career-card:nth-child(5) { animation-delay: 0.18s; }
-    #test-mode-panel.show .test-career-card:nth-child(6) { animation-delay: 0.22s; }
-
-    @keyframes careerCardPop {
-      from {
-        opacity: 0;
-        transform: translateX(-12px) scale(0.9);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0) scale(1);
-      }
-    }
-
-    /* 修复按钮重叠问题 */
-    .chat-full-close {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: white;
-      border: 3px solid var(--dark);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--dark);
-      transition: all 0.2s;
-      box-shadow: 3px 3px 0 var(--dark);
-      z-index: 10;
-    }
-
-    .chat-full-close:hover {
-      transform: translate(-2px, -2px);
-      box-shadow: 5px 5px 0 var(--dark);
-      background: var(--coral);
-      color: white;
-    }
-
-    .chat-header-actions {
-      display: flex;
-      gap: 12px;
-      margin-right: 60px;
-    }
-
-    @media (max-width: 600px) {
-      .chat-full-close {
-        width: 38px;
-        height: 38px;
-        font-size: 20px;
-        top: 16px;
-        right: 16px;
-      }
-
-      .chat-header-actions {
-        margin-right: 50px;
-        gap: 8px;
-      }
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 var(--dark);
     }
   </style>
+
 </head>
 <body>
 
   <!-- TOP BAR -->
+
   <div id="top-bar">
-    <a href="home.html" data-i18n="nav.home_arrow">← Home</a>
+    <a href="home.html">← Home</a>
     <img src="../assets/Brighten-logo.png" alt="Brighten" class="logo-img" />
-    <div style="display: flex; gap: 8px; align-items: center;">
-      <button id="test-mode-btn" data-i18n="ar.test_btn">🧪 Test</button>
-      <a href="careers.html" data-i18n="nav.careers">Careers</a>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button id="test-mode-btn">🧪 Test</button>
+      <a href="careers.html">Careers</a>
     </div>
   </div>
 
-  <!-- Test Backdrop -->
-  <div class="test-backdrop" id="test-backdrop"></div>
+  <!-- SCANNING HINT — fades out when toy is found -->
 
-  <!-- Test Mode Panel -->
-  <div id="test-mode-panel">
-    <div class="test-panel-title" data-i18n="ar.test_title">✨ Select a Career to Test</div>
-    <div class="test-career-grid">
-      <div class="test-career-card" data-career='{"id":"programmer","name":"Programmer","tag":"Technology","img":"../assets/characters/char-programmer.png"}'>
-        <span class="test-career-emoji">💻</span>
-        <span class="test-career-name" data-i18n="career.programmer">Programmer</span>
-      </div>
-      <div class="test-career-card" data-career='{"id":"police","name":"Police Officer","tag":"Public Safety","img":"../assets/characters/char-police.png"}'>
-        <span class="test-career-emoji">👮</span>
-        <span class="test-career-name" data-i18n="career.police">Police</span>
-      </div>
-      <div class="test-career-card" data-career='{"id":"teacher","name":"Teacher","tag":"Education","img":"../assets/characters/char-teacher.png"}'>
-        <span class="test-career-emoji">📚</span>
-        <span class="test-career-name" data-i18n="career.teacher">Teacher</span>
-      </div>
-      <div class="test-career-card" data-career='{"id":"farmer","name":"Farmer","tag":"Agriculture","img":"../assets/characters/char-farmer.png"}'>
-        <span class="test-career-emoji">🌾</span>
-        <span class="test-career-name" data-i18n="career.farmer">Farmer</span>
-      </div>
-      <div class="test-career-card" data-career='{"id":"doctor","name":"Doctor","tag":"Healthcare","img":"../assets/characters/char-doctor.png"}'>
-        <span class="test-career-emoji">👨‍⚕️</span>
-        <span class="test-career-name" data-i18n="career.doctor">Doctor</span>
-      </div>
-      <div class="test-career-card" data-career='{"id":"astronaut","name":"Astronaut","tag":"Space","img":"../assets/characters/char-astronaut.png"}'>
-        <span class="test-career-emoji">🚀</span>
-        <span class="test-career-name" data-i18n="career.astronaut">Astronaut</span>
-      </div>
-    </div>
-    <button class="test-panel-close" id="close-test-panel" data-i18n="ar.cancel">Cancel</button>
-  </div>
+  <div id="hint">📷 Point at your toy to scan</div>
 
-  <!-- Scanning Hint -->
-  <div id="hint" data-i18n="ar.hint">📷 Point at your toy to scan</div>
+  <!-- AR SCENE — stays fully visible the whole time -->
 
-  <!-- AR SCENE -->
   <div id="ar-container">
     <a-scene
       mindar-image="imageTargetSrc: ../assets/targets.mind;"
@@ -298,475 +406,168 @@
     </a-scene>
   </div>
 
-  <!-- ============================================ -->
-  <!-- TRANSITION OVERLAY -->
-  <!-- ============================================ -->
-  <div id="transition-overlay">
-    <div class="transition-bg">
-      <div class="transition-orb"></div>
-      <div class="transition-orb"></div>
-      <div class="transition-orb"></div>
-    </div>
+  <!-- BOTTOM CHAT PANEL — floats above the AR camera -->
 
-    <div id="transition-sparkles"></div>
-
-    <div class="transition-character">
-      <img id="transition-char-img" class="transition-character-img" src="" alt="">
-      <h2 id="transition-char-name" class="transition-career-name"></h2>
-      <span id="transition-char-tag" class="transition-career-tag"></span>
-    </div>
-
-    <div class="transition-loading">
-      <div class="loading-text">
-        <span>L</span><span>O</span><span>A</span><span>D</span><span>I</span><span>N</span><span>G</span>
-      </div>
-      <div class="loading-bar-container">
-        <div class="loading-bar-fill"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ============================================ -->
-  <!-- FULLSCREEN CHAT OVERLAY -->
-  <!-- ============================================ -->
-  <div id="fullscreen-chat">
-    <button class="chat-full-close" id="close-fullscreen-chat">✕</button>
-
-    <div class="chat-full-header">
-      <div class="chat-header-left">
-        <img id="chat-avatar" class="chat-header-avatar" src="" alt="">
-        <div class="chat-header-info">
-          <h3 id="chat-career-name" data-i18n="career.programmer">Programmer</h3>
-          <div class="chat-header-status">
-            <span class="status-dot"></span>
-            <span data-i18n="ar.online">Online • Ready to chat!</span>
-          </div>
+  <div id="chat-panel">
+    <div class="chat-panel-header">
+      <img id="chat-avatar" class="chat-avatar" src="" alt="" />
+      <div class="chat-header-info">
+        <h3 id="chat-character-name"></h3>
+        <div class="chat-status">
+          <span class="status-dot"></span>
+          Online · Ready to chat!
         </div>
       </div>
-      <div class="chat-header-actions">
-        <!-- Clear chat button removed -->
-      </div>
+      <button class="chat-close-btn" id="chat-close">✕</button>
     </div>
 
-    <div class="chat-full-messages" id="fullscreen-messages"></div>
+```
+<div id="chat-messages"></div>
 
-    <div class="chat-full-input-area">
-      <div class="chat-full-presets" id="fullscreen-presets"></div>
-      <div class="chat-full-input-row">
-        <input type="text" class="chat-full-input" id="fullscreen-input" data-i18n="chat.placeholder" placeholder="Ask me anything..." />
-        <button class="chat-full-send" id="fullscreen-send">📤</button>
-      </div>
-    </div>
+<div id="chat-presets"></div>
+
+<div id="chat-input-row">
+  <input type="text" id="chat-input" placeholder="Ask me anything..." />
+  <button id="chat-send">Send</button>
+</div>
+```
+
   </div>
 
-  <!-- Original Chat UI (hidden, used for compatibility) -->
-  <div id="chat-ui" style="display:none;">
-    <div id="chat-character-name"></div>
-    <div id="chat-messages"></div>
-    <div id="chat-input-area">
-      <div id="chat-presets"></div>
-      <div id="chat-input-row">
-        <input type="text" id="chat-input" placeholder="Ask me anything..." />
-        <button id="chat-send">Send</button>
+  <!-- TEST MODE -->
+
+  <div class="test-backdrop" id="test-backdrop"></div>
+  <div id="test-mode-panel">
+    <div class="test-panel-title">✨ Select a Career to Test</div>
+    <div class="test-career-grid">
+      <div class="test-career-card" data-career='{"id":"programmer","name":"Programmer","img":"../assets/characters/char-programmer.png"}'>
+        <span class="test-career-emoji">💻</span>
+        <span class="test-career-name">Programmer</span>
       </div>
+      <div class="test-career-card" data-career='{"id":"police","name":"Police Officer","img":"../assets/characters/char-police.png"}'>
+        <span class="test-career-emoji">👮</span>
+        <span class="test-career-name">Police</span>
+      </div>
+      <div class="test-career-card" data-career='{"id":"teacher","name":"Teacher","img":"../assets/characters/char-teacher.png"}'>
+        <span class="test-career-emoji">📚</span>
+        <span class="test-career-name">Teacher</span>
+      </div>
+      <div class="test-career-card" data-career='{"id":"farmer","name":"Farmer","img":"../assets/characters/char-farmer.png"}'>
+        <span class="test-career-emoji">🌾</span>
+        <span class="test-career-name">Farmer</span>
+      </div>
+      <div class="test-career-card" data-career='{"id":"doctor","name":"Doctor","img":"../assets/characters/char-doctor.png"}'>
+        <span class="test-career-emoji">👨‍⚕️</span>
+        <span class="test-career-name">Doctor</span>
+      </div>
+      <div class="test-career-card" data-career='{"id":"astronaut","name":"Astronaut","img":"../assets/characters/char-astronaut.png"}'>
+        <span class="test-career-emoji">🚀</span>
+        <span class="test-career-name">Astronaut</span>
+      </div>
+    </div>
+    <button class="test-panel-close" id="close-test-panel">Cancel</button>
+  </div>
+
+  <!-- Hidden original chat-ui for chat.js compatibility -->
+
+  <div id="chat-ui" style="display:none;">
+    <div id="chat-messages-hidden"></div>
+    <div id="chat-input-area">
+      <div id="chat-presets-hidden"></div>
+      <div><input type="text" id="chat-input-hidden" /><button id="chat-send-hidden">Send</button></div>
     </div>
   </div>
 
   <script src="../js/ar.js"></script>
-  <script src="../js/i18n.js"></script>
+
   <script src="../js/chat.js"></script>
+
   <script>
-    (function() {
+    (function () {
       'use strict';
 
-      // Career data with images and tags (minimal - names/tags come from i18n)
-      const CAREER_DATA = {
-        programmer: { img: '../assets/characters/char-programmer.png' },
-        police:     { img: '../assets/characters/char-police.png' },
-        teacher:    { img: '../assets/characters/char-teacher.png' },
-        farmer:     { img: '../assets/characters/char-farmer.png' },
-        doctor:     { img: '../assets/characters/char-doctor.png' },
-        astronaut:  { img: '../assets/characters/char-astronaut.png' }
+      const CAREER_IMGS = {
+        programmer: '../assets/characters/char-programmer.png',
+        police:     '../assets/characters/char-police.png',
+        teacher:    '../assets/characters/char-teacher.png',
+        farmer:     '../assets/characters/char-farmer.png',
+        doctor:     '../assets/characters/char-doctor.png',
+        astronaut:  '../assets/characters/char-astronaut.png',
       };
 
-      function getCareerName(careerId) {
-        const t = (typeof I18N !== 'undefined') ? I18N.t : (k) => k;
-        return t('career.' + careerId, null) || careerId;
-      }
-
-      function getCareerTag(careerId) {
-        const tags = {
-          programmer: 'tag.technology',
-          police: 'tag.public_safety',
-          teacher: 'tag.education',
-          farmer: 'tag.agriculture',
-          doctor: 'tag.healthcare',
-          astronaut: 'tag.space'
-        };
-        const t = (typeof I18N !== 'undefined') ? I18N.t : (k) => k;
-        const key = tags[careerId] || '';
-        return key ? t(key, null) : '';
-      }
-
-      let isTestMode = false;
-      let isTransitioning = false;
-      let currentCareerData = null;
-
-      // DOM Elements
-      const testBtn = document.getElementById('test-mode-btn');
-      const testPanel = document.getElementById('test-mode-panel');
+      const hint        = document.getElementById('hint');
+      const chatPanel   = document.getElementById('chat-panel');
+      const chatAvatar  = document.getElementById('chat-avatar');
+      const chatClose   = document.getElementById('chat-close');
+      const testBtn     = document.getElementById('test-mode-btn');
+      const testPanel   = document.getElementById('test-mode-panel');
       const testBackdrop = document.getElementById('test-backdrop');
-      const closeTestBtn = document.getElementById('close-test-panel');
-      const transitionOverlay = document.getElementById('transition-overlay');
-      const fullscreenChat = document.getElementById('fullscreen-chat');
-      const arContainer = document.getElementById('ar-container');
-      const hint = document.getElementById('hint');
+      const closeTest   = document.getElementById('close-test-panel');
 
-      // Transition elements
-      const transCharImg = document.getElementById('transition-char-img');
-      const transCharName = document.getElementById('transition-char-name');
-      const transCharTag = document.getElementById('transition-char-tag');
-      const sparklesContainer = document.getElementById('transition-sparkles');
+      // ── SHOW / HIDE CHAT PANEL ────────────────────────────
+      function showChat(career) {
+        chatAvatar.src = CAREER_IMGS[career.id] || '';
+        hint.style.opacity = '0';
+        chatPanel.classList.add('show');
 
-      // Fullscreen chat elements
-      const chatAvatar = document.getElementById('chat-avatar');
-      const chatCareerName = document.getElementById('chat-career-name');
-      const fullscreenMessages = document.getElementById('fullscreen-messages');
-      const fullscreenPresets = document.getElementById('fullscreen-presets');
-      const fullscreenInput = document.getElementById('fullscreen-input');
-      const fullscreenSend = document.getElementById('fullscreen-send');
-      const closeChatBtn = document.getElementById('close-fullscreen-chat');
-
-      // Listen for locale changes to update dynamic name/tag elements
-      window.addEventListener('localechange', function updateOnLocaleChange() {
-        if (currentCareerData) {
-          // Update transition elements if visible
-          transCharName.textContent = getCareerName(currentCareerData.id);
-          transCharTag.textContent = getCareerTag(currentCareerData.id);
-          // Update chat header if visible
-          chatCareerName.textContent = getCareerName(currentCareerData.id);
-        }
-      });
-
-      // ============================================
-      // TRANSITION ANIMATION
-      // ============================================
-      function createSparkles() {
-        sparklesContainer.innerHTML = '';
-        const emojis = ['✨', '⭐', '🌟', '💫', '🎈', '🎉', '💖', '🌈'];
-
-        for (let i = 0; i < 30; i++) {
-          const sparkle = document.createElement('div');
-          sparkle.className = 'transition-sparkle';
-          sparkle.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-          sparkle.style.left = Math.random() * 100 + '%';
-          sparkle.style.top = Math.random() * 100 + '%';
-          sparkle.style.animationDelay = Math.random() * 2 + 's';
-          sparkle.style.fontSize = (16 + Math.random() * 30) + 'px';
-          sparklesContainer.appendChild(sparkle);
-        }
-      }
-
-      async function showTransition(career) {
-        return new Promise((resolve) => {
-          isTransitioning = true;
-
-          // Set career data
-          const data = CAREER_DATA[career.id] || { img: '../assets/characters/char-programmer.png' };
-          currentCareerData = { ...career, ...data };
-
-          transCharImg.src = data.img;
-          transCharName.textContent = getCareerName(career.id);
-          transCharTag.textContent = getCareerTag(career.id);
-
-          createSparkles();
-
-          // Show transition overlay
-          transitionOverlay.classList.add('active');
-
-          // Hide AR hint
-          hint.style.opacity = '0';
-
-          // Resolve after animation completes
-          setTimeout(() => {
-            transitionOverlay.classList.remove('active');
-            isTransitioning = false;
-            resolve();
-          }, 2800);
-        });
-      }
-
-      // ============================================
-      // FULLSCREEN CHAT
-      // ============================================
-      function showFullscreenChat(career) {
-        // Set avatar and name
-        chatAvatar.src = career.img || `../assets/characters/char-${career.id}.png`;
-        chatCareerName.textContent = getCareerName(career.id);
-
-        // Show fullscreen chat
-        fullscreenChat.classList.add('active');
-
-        // Initialize chat in fullscreen mode
-        initFullscreenChat(career);
-      }
-
-      function initFullscreenChat(career) {
-        // Clear messages
-        fullscreenMessages.innerHTML = '';
-
-        // Setup presets
-        const presets = getPresetsForCareer(career.id);
-        fullscreenPresets.innerHTML = presets.map(p =>
-          `<button class="preset-btn" data-question="${p}">${p}</button>`
-        ).join('');
-
-        // Initialize chat.js system if available
         if (typeof initChat === 'function') {
-          try {
-            // Create a wrapper to make chat.js work with fullscreen elements
-            setupChatJSAdapter();
-
-            // Initialize chat.js with the career data
-            initChat(career);
-
-            console.log('chat.js initialized successfully for:', career.name);
-          } catch (error) {
-            console.error('Failed to initialize chat.js:', error);
-            // Fallback: add welcome message
-            const welcomet = (typeof I18N !== 'undefined') ? I18N.t : (k) => k;
-            addFullscreenMessage('assistant', welcomet('chat.welcome', { name: getCareerName(career.id) }));
-          }
-        } else {
-          // Fallback if chat.js is not loaded
-          console.warn('chat.js not loaded, using fallback chat');
-          const welcomeT = (typeof I18N !== 'undefined') ? I18N.t : (k) => k;
-          addFullscreenMessage('assistant', welcomeT('chat.welcome', { name: getCareerName(career.id) }));
-        }
-
-        // Setup event listeners
-        setupFullscreenListeners(career);
-      }
-
-      // Adapter to make chat.js work with fullscreen elements
-      function setupChatJSAdapter() {
-        // Override DOM element getters for chat.js
-        const originalGetElementById = document.getElementById;
-
-        document.getElementById = function(id) {
-          // Map chat.js IDs to fullscreen IDs
-          const idMap = {
-            'chat-messages': 'fullscreen-messages',
-            'chat-input': 'fullscreen-input',
-            'chat-send': 'fullscreen-send',
-            'chat-presets': 'fullscreen-presets',
-            'chat-character-name': 'chat-career-name'
-          };
-
-          const mappedId = idMap[id] || id;
-          return originalGetElementById.call(document, mappedId);
-        };
-
-        // Override addMessage to use fullscreen messages container
-        if (window.addMessage) {
-          const originalAddMessage = window.addMessage;
-          window.addMessage = function(role, content, animate = true) {
-            // Use fullscreen message function
-            addFullscreenMessage(role, content);
-          };
-        }
-
-        // Override addMessageWithTypewriter if needed
-        if (window.addMessageWithTypewriter) {
-          const originalAddMessageWithTypewriter = window.addMessageWithTypewriter;
-          window.addMessageWithTypewriter = function(role, content) {
-            return new Promise(resolve => {
-              addFullscreenMessage(role, content);
-              resolve();
-            });
-          };
-        }
-
-        console.log('Chat.js adapter setup complete');
-      }
-
-      function getPresetsForCareer(careerId) {
-        const pt = (typeof I18N !== 'undefined') ? I18N.t : (k) => k;
-        const presets = [0, 1, 2].map(i => pt('preset.' + careerId + '.' + i, null)).filter(Boolean);
-        if (presets.length === 0) {
-          [0, 1, 2].forEach(i => {
-            const val = pt('preset.default.' + i, null);
-            if (val) presets.push(val);
-          });
-        }
-        return presets;
-      }
-
-      function addFullscreenMessage(role, content) {
-        const msgDiv = document.createElement('div');
-        msgDiv.className = `message ${role}`;
-        msgDiv.textContent = content;
-        fullscreenMessages.appendChild(msgDiv);
-        fullscreenMessages.scrollTop = fullscreenMessages.scrollHeight;
-      }
-
-      function setupFullscreenListeners(career) {
-        // Preset buttons
-        fullscreenPresets.querySelectorAll('.preset-btn').forEach(btn => {
-          btn.addEventListener('click', () => {
-            const question = btn.dataset.question;
-            fullscreenInput.value = question;
-            sendFullscreenMessage(career);
-          });
-        });
-
-        // Send button
-        fullscreenSend.addEventListener('click', () => sendFullscreenMessage(career));
-
-        // Enter key
-        fullscreenInput.addEventListener('keypress', (e) => {
-          if (e.key === 'Enter') {
-            sendFullscreenMessage(career);
-          }
-        });
-      }
-
-      async function sendFullscreenMessage(career) {
-        const message = fullscreenInput.value.trim();
-        if (!message) return;
-
-        // Clear input and disable send button
-        fullscreenInput.value = '';
-        fullscreenSend.disabled = true;
-
-        // Use chat.js sendMessage if available
-        if (typeof sendMessage === 'function') {
-          try {
-            // Call chat.js sendMessage function
-            // Note: sendMessage will handle adding user message and API call
-            await sendMessage(message);
-
-          } catch (error) {
-            console.error('Error calling sendMessage:', error);
-
-            // Fallback: show error message
-            document.getElementById('typing-indicator-fs')?.remove();
-            addFullscreenMessage('assistant', "Oops! Something went wrong. Let me try again! 🤔");
-
-            fullscreenSend.disabled = false;
-            fullscreenInput.focus();
-          }
-        } else {
-          // Fallback: simulate API call
-          addFullscreenMessage('user', message);
-          fullscreenSend.disabled = true;
-
-          // Show typing indicator
-          const typingDiv = document.createElement('div');
-          typingDiv.className = 'message assistant';
-          typingDiv.id = 'typing-indicator-fs';
-          typingDiv.innerHTML = '<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>';
-          fullscreenMessages.appendChild(typingDiv);
-
-          setTimeout(() => {
-            document.getElementById('typing-indicator-fs')?.remove();
-
-            const ft = (typeof I18N !== 'undefined') ? I18N.t : (k) => k;
-            const responses = [
-              ft('chat.fallback1', null) || 'That\'s a great question! I love talking about my job! 🌟',
-              ft('chat.fallback2', null) || 'Let me tell you all about it! Every day is different and exciting! ✨',
-              ft('chat.fallback3', null) || 'Great question! I\'m so happy you asked about that! 💫'
-            ];
-            const response = responses[Math.floor(Math.random() * responses.length)];
-            addFullscreenMessage('assistant', response);
-
-            fullscreenSend.disabled = false;
-            fullscreenInput.focus();
-          }, 1500);
+          initChat(career);
         }
       }
 
-      // ============================================
-      // AR DETECTION HANDLERS
-      // ============================================
-      window.onCareerFound = async function(career) {
-        if (isTestMode || isTransitioning) return;
-
-        // Show transition
-        await showTransition(career);
-
-        // Hide AR scene
-        arContainer.style.opacity = '0.4';
-
-        // Show fullscreen chat
-        showFullscreenChat(career);
-      };
-
-      window.onCareerLost = function() {
-        if (isTestMode || isTransitioning) return;
-
-        arContainer.style.opacity = '1';
+      function hideChat() {
+        chatPanel.classList.remove('show');
         hint.style.opacity = '1';
-        fullscreenChat.classList.remove('active');
+      }
+
+      chatClose.addEventListener('click', hideChat);
+
+      // ── AR HANDLERS (called by ar.js) ─────────────────────
+      window.onCareerFound = function (career) {
+        showChat(career);
       };
 
-      // ============================================
-      // TEST MODE
-      // ============================================
-      function showTestPanel() {
+      window.onCareerLost = function () {
+        hideChat();
+      };
+
+      // ── TEST MODE ─────────────────────────────────────────
+      function openTestPanel() {
         testBackdrop.classList.add('show');
         testPanel.style.display = 'block';
         setTimeout(() => testPanel.classList.add('show'), 10);
       }
 
-      function hideTestPanel() {
+      function closeTestPanel() {
         testBackdrop.classList.remove('show');
         testPanel.classList.remove('show');
-        setTimeout(() => { if (!testPanel.classList.contains('show')) testPanel.style.display = 'none'; }, 300);
+        setTimeout(() => {
+          if (!testPanel.classList.contains('show')) testPanel.style.display = 'none';
+        }, 300);
       }
 
-      testBtn.addEventListener('click', showTestPanel);
-      closeTestBtn.addEventListener('click', hideTestPanel);
-      testBackdrop.addEventListener('click', hideTestPanel);
+      testBtn.addEventListener('click', openTestPanel);
+      closeTest.addEventListener('click', closeTestPanel);
+      testBackdrop.addEventListener('click', closeTestPanel);
 
       document.querySelectorAll('.test-career-card').forEach(card => {
-        card.addEventListener('click', async () => {
+        card.addEventListener('click', () => {
           const career = JSON.parse(card.dataset.career);
-          isTestMode = true;
-          hideTestPanel();
-
-          await showTransition(career);
-          arContainer.style.opacity = '0.4';
-          showFullscreenChat(career);
+          closeTestPanel();
+          showChat(career);
         });
       });
 
-
-      // ============================================
-      // CLOSE CHAT
-      // ============================================
-      closeChatBtn.addEventListener('click', () => {
-        fullscreenChat.classList.remove('active');
-        arContainer.style.opacity = '1';
-        hint.style.opacity = '1';
-        isTestMode = false;
-      });
-
-      // Clear chat button
-      // Clear chat button removed
-
-      // ESC key to close
-      document.addEventListener('keydown', (e) => {
+      // ESC to close
+      document.addEventListener('keydown', e => {
         if (e.key === 'Escape') {
-          if (testPanel.classList.contains('show')) {
-            hideTestPanel();
-          } else if (fullscreenChat.classList.contains('active')) {
-            closeChatBtn.click();
-          }
+          if (testPanel.classList.contains('show')) closeTestPanel();
+          else hideChat();
         }
       });
 
     })();
   </script>
+
 </body>
 </html>
