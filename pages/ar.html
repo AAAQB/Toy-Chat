@@ -204,6 +204,23 @@
     }
     #chat-send:active { background: #e05555; }
     #chat-send:disabled { opacity: 0.6; }
+    /* Override chat.js preset styles — keep buttons on one horizontal line */
+    #chat-presets {
+      display: flex !important;
+      flex-direction: row !important;
+      flex-wrap: nowrap !important;
+      overflow-x: auto !important;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      gap: 8px !important;
+      padding-bottom: 4px;
+    }
+    #chat-presets::-webkit-scrollbar { display: none; }
+    #chat-presets .preset-btn,
+    #chat-presets button {
+      flex-shrink: 0 !important;
+      white-space: nowrap !important;
+    }
   </style>
 
 </head>
