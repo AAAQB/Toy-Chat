@@ -165,10 +165,25 @@
       gap: 6px; padding: 2px 0;
     }
     #chat-presets {
-      display: flex; flex-wrap: nowrap; gap: 6px; flex-shrink: 0;
-      overflow-x: auto; scrollbar-width: none; padding-bottom: 2px;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      gap: 8px;
+      flex-shrink: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 2px 0 4px;
+      -webkit-overflow-scrolling: touch;
     }
     #chat-presets::-webkit-scrollbar { display: none; }
+    /* Force preset buttons to stay on one line */
+    #chat-presets .preset-btn {
+      flex-shrink: 0;
+      white-space: nowrap;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
     #chat-input-row {
       display: flex; gap: 8px; align-items: center; flex-shrink: 0;
     }
