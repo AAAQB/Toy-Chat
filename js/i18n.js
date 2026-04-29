@@ -205,7 +205,7 @@ const I18N = (function () {
       'nav.careers_arrow': '← 职业列表',
 
       'hero.badge': '✨ AR 赋能的学习玩具',
-      'hero.title': '扫描你的玩具。<br><span class="highlight">认识你的英雄！</span>',
+      'hero.title': '&ensp;扫描你的玩具。<br><span class="highlight">&ensp;认识你的英雄！</span>',
       'hero.subtitle': '用手机对准任何 Brighten 人偶，让它活起来 — 然后与你最喜欢的职业角色聊天！',
       'hero.cta': '📷 开始扫描',
       'section.how': '玩法介绍 🪄',
@@ -630,6 +630,11 @@ const I18N = (function () {
     }
     // --font-display can't hold comma-separated font stacks via setProperty reliably.
     // Instead, set a data attribute on html and use CSS selector.
+    // Push Chinese hero title slightly right to offset fullwidth punctuation visual imbalance
+    const heroTitle = document.querySelector('.hero h1');
+    if (heroTitle) {
+      heroTitle.style.paddingLeft = currentLocale === 'zh' ? '0.3em' : '0px';
+    }
     document.documentElement.dataset.locale = currentLocale;
   }
 
