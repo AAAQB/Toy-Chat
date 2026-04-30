@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -222,12 +221,10 @@
       white-space: nowrap !important;
     }
   </style>
-
 </head>
 <body>
 
   <!-- TOP BAR -->
-
   <div id="top-bar">
     <a href="home.html" data-i18n="nav.home_arrow">← Home</a>
     <img src="../assets/Brighten-logo.png" alt="Brighten" class="logo-img" />
@@ -238,11 +235,9 @@
   </div>
 
   <!-- Test Backdrop -->
-
   <div class="test-backdrop" id="test-backdrop"></div>
 
   <!-- Test Mode Panel -->
-
   <div id="test-mode-panel">
     <div class="test-panel-title" data-i18n="ar.test_title">✨ Select a Career to Test</div>
     <div class="test-career-grid">
@@ -275,14 +270,12 @@
   </div>
 
   <!-- Scanning Hint -->
-
   <div id="hint" data-i18n="ar.hint">📷 Point at your toy to scan</div>
 
   <!-- AR SCENE -->
-
   <div id="ar-container">
     <a-scene
-      mindar-image="imageTargetSrc: ../assets/targets.mind;"
+      mindar-image="imageTargetSrc: ../assets/targets.mind; filterMinCF: 0.001; filterBeta: 0.01; warmupTolerance: 5; missTolerance: 10"
       embedded
       vr-mode-ui="enabled: false"
       renderer="colorManagement: true"
@@ -367,7 +360,6 @@
   </div>
 
   <!-- TRANSITION OVERLAY (保留队友的过场动画) -->
-
   <div id="transition-overlay">
     <div class="transition-bg">
       <div class="transition-orb"></div>
@@ -391,7 +383,6 @@
   </div>
 
   <!-- BOTTOM CHAT PANEL — AR camera stays visible above -->
-
   <div id="chat-panel">
     <div class="chat-panel-header">
       <img id="chat-panel-avatar" class="chat-header-avatar" src="" alt="" />
@@ -406,26 +397,20 @@
       <button class="chat-close-btn" id="chat-close">✕</button>
     </div>
 
-```
-<!-- chat.js writes messages, presets, and listens on input/send -->
-<div id="chat-messages"></div>
-<div id="chat-presets"></div>
-<div id="chat-input-row">
-  <input type="text" id="chat-input" placeholder="Ask me anything..." data-i18n-placeholder="chat.placeholder" />
-  <button id="chat-send">Send</button>
-</div>
-```
-
+    <!-- chat.js writes messages, presets, and listens on input/send -->
+    <div id="chat-messages"></div>
+    <div id="chat-presets"></div>
+    <div id="chat-input-row">
+      <input type="text" id="chat-input" placeholder="Ask me anything..." data-i18n-placeholder="chat.placeholder" />
+      <button id="chat-send">Send</button>
+    </div>
   </div>
 
   <!-- chat-ui hidden shim for chat.js compatibility -->
-
   <div id="chat-ui" style="display:none"></div>
 
   <script src="../js/ar.js"></script>
-
   <script src="../js/i18n.js"></script>
-
   <script src="../js/chat.js"></script>
 
   <script>
@@ -456,6 +441,7 @@
 
       let isTransitioning = false;
       let currentCareerId = null;
+      let lostTimer = null;
 
       const hint            = document.getElementById('hint');
       const chatPanel       = document.getElementById('chat-panel');
@@ -527,14 +513,23 @@
 
       // ── AR HANDLERS ─────────────────────────────────────────
       window.onCareerFound = async function (career) {
+        // Cancel any pending hide timer — toy came back into view
+        if (lostTimer) { clearTimeout(lostTimer); lostTimer = null; }
         if (isTransitioning) return;
-        await showTransition(career);
+        // Only show transition if chat is not already open for this career
+        if (currentCareerId !== career.id) {
+          await showTransition(career);
+        }
         showChat(career);
       };
 
       window.onCareerLost = function () {
         if (isTransitioning) return;
-        hideChat();
+        // Wait 2 seconds before hiding — brief occlusion won't close the chat
+        lostTimer = setTimeout(() => {
+          hideChat();
+          lostTimer = null;
+        }, 2000);
       };
 
       // ── LANGUAGE SWITCH ──────────────────────────────────────
@@ -599,6 +594,5 @@
 
     })();
   </script>
-
 </body>
 </html>
