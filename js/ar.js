@@ -17,11 +17,19 @@ document.addEventListener('DOMContentLoaded', () => {
       const target = document.querySelector(`#ar-target-${index}`);
       if (!target) return;
 
+      // Toy recognised — trigger chat
       target.addEventListener('targetFound', () => {
-        onCareerFound(CAREERS[index]);
+        if (typeof onCareerFound === 'function') {
+          onCareerFound(CAREERS[index]);
+        }
       });
 
-     
+      // Toy left camera view — hide chat after delay
+      target.addEventListener('targetLost', () => {
+        if (typeof onCareerLost === 'function') {
+          onCareerLost();
+        }
+      });
     });
   });
 });
