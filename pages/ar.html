@@ -220,6 +220,97 @@
       flex-shrink: 0 !important;
       white-space: nowrap !important;
     }
+
+    /* ── FULLSCREEN CHAT (Test mode only) ── */
+    #fullscreen-chat {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      background: var(--cream);
+      display: none;
+      flex-direction: column;
+    }
+    #fullscreen-chat.active { display: flex; }
+
+    .chat-full-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: white;
+      border-bottom: 2px solid rgba(0,0,0,0.06);
+      flex-shrink: 0;
+    }
+    .chat-header-avatar {
+      width: 44px; height: 44px;
+      border-radius: 50%; object-fit: cover;
+      border: 2px solid var(--coral);
+      flex-shrink: 0;
+    }
+    .chat-full-header h3 {
+      font-family: var(--font-display);
+      font-size: 16px; font-weight: 800;
+      color: var(--dark); margin: 0; flex: 1;
+    }
+    .chat-full-close {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: #f0f0f0; border: none;
+      font-size: 16px; cursor: pointer;
+      display: flex; align-items: center;
+      justify-content: center;
+      transition: all 0.15s; flex-shrink: 0;
+    }
+    .chat-full-close:active { background: var(--coral); color: white; }
+
+    .chat-full-status {
+      font-size: 11px; color: #6BCB77;
+      font-weight: 600; display: flex;
+      align-items: center; gap: 4px;
+    }
+
+    #fullscreen-messages {
+      flex: 1; overflow-y: auto;
+      display: flex; flex-direction: column;
+      gap: 8px; padding: 16px;
+    }
+
+    .chat-full-input-area {
+      padding: 10px 16px 24px;
+      background: white;
+      border-top: 2px solid rgba(0,0,0,0.06);
+      flex-shrink: 0;
+    }
+
+    #fullscreen-presets {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 8px;
+      -webkit-overflow-scrolling: touch;
+    }
+    #fullscreen-presets::-webkit-scrollbar { display: none; }
+    #fullscreen-presets .preset-btn { flex-shrink: 0; white-space: nowrap; }
+
+    .chat-full-input-row {
+      display: flex; gap: 8px; align-items: center;
+    }
+    #fullscreen-input {
+      flex: 1; padding: 10px 14px;
+      border: 2px solid #ddd; border-radius: 20px;
+      font-size: 14px; font-family: var(--font-body);
+      outline: none; background: #fafafa;
+    }
+    #fullscreen-input:focus { border-color: var(--coral); }
+    #fullscreen-send {
+      padding: 10px 18px; background: var(--coral);
+      color: white; border: none; border-radius: 20px;
+      font-size: 14px; font-family: var(--font-body);
+      font-weight: 700; cursor: pointer; flex-shrink: 0;
+    }
+    #fullscreen-send:disabled { opacity: 0.6; }
   </style>
 </head>
 <body>
@@ -282,22 +373,78 @@
       device-orientation-permission-ui="enabled: false"
     >
       <a-entity mindar-image-target="targetIndex: 0" id="ar-target-0">
-        <a-image src="../assets/characters/char-programmer.png" position="0 0.5 0" width="1" height="1.5"></a-image>
+        <a-image src="../assets/characters/char-programmer.png"
+          position="0 0.5 0" width="1" height="1.5"
+          animation__enter="property: position; from: 0 -0.3 0; to: 0 0.5 0; dur: 600; easing: easeOutBack; startEvents: null"
+          animation__bob="property: position; from: 0 0.5 0; to: 0 0.65 0; dur: 2000; dir: alternate; loop: true; easing: easeInOutSine"
+          animation__scale="property: scale; from: 0 0 0; to: 1 1 1; dur: 500; easing: easeOutBack">
+        </a-image>
+        <!-- Shadow under character -->
+        <a-circle position="0 0.01 0" rotation="-90 0 0"
+          radius="0.4" color="#000000" opacity="0.2"
+          scale="1 0.6 1"
+          animation__shadow="property: scale; from: 0 0 0; to: 1 0.6 1; dur: 500; easing: easeOutBack">
+        </a-circle>
       </a-entity>
       <a-entity mindar-image-target="targetIndex: 1" id="ar-target-1">
-        <a-image src="../assets/characters/char-police.png" position="0 0.5 0" width="1" height="1.5"></a-image>
+        <a-image src="../assets/characters/char-police.png"
+          position="0 0.5 0" width="1" height="1.5"
+          animation__bob="property: position; from: 0 0.5 0; to: 0 0.65 0; dur: 2000; dir: alternate; loop: true; easing: easeInOutSine"
+          animation__scale="property: scale; from: 0 0 0; to: 1 1 1; dur: 500; easing: easeOutBack">
+        </a-image>
+        <a-circle position="0 0.01 0" rotation="-90 0 0"
+          radius="0.4" color="#000000" opacity="0.2"
+          scale="1 0.6 1"
+          animation__shadow="property: scale; from: 0 0 0; to: 1 0.6 1; dur: 500; easing: easeOutBack">
+        </a-circle>
       </a-entity>
       <a-entity mindar-image-target="targetIndex: 2" id="ar-target-2">
-        <a-image src="../assets/characters/char-teacher.png" position="0 0.5 0" width="1" height="1.5"></a-image>
+        <a-image src="../assets/characters/char-teacher.png"
+          position="0 0.5 0" width="1" height="1.5"
+          animation__bob="property: position; from: 0 0.5 0; to: 0 0.65 0; dur: 2200; dir: alternate; loop: true; easing: easeInOutSine"
+          animation__scale="property: scale; from: 0 0 0; to: 1 1 1; dur: 500; easing: easeOutBack">
+        </a-image>
+        <a-circle position="0 0.01 0" rotation="-90 0 0"
+          radius="0.4" color="#000000" opacity="0.2"
+          scale="1 0.6 1"
+          animation__shadow="property: scale; from: 0 0 0; to: 1 0.6 1; dur: 500; easing: easeOutBack">
+        </a-circle>
       </a-entity>
       <a-entity mindar-image-target="targetIndex: 3" id="ar-target-3">
-        <a-image src="../assets/characters/char-farmer.png" position="0 0.5 0" width="1" height="1.5"></a-image>
+        <a-image src="../assets/characters/char-farmer.png"
+          position="0 0.5 0" width="1" height="1.5"
+          animation__bob="property: position; from: 0 0.5 0; to: 0 0.65 0; dur: 1800; dir: alternate; loop: true; easing: easeInOutSine"
+          animation__scale="property: scale; from: 0 0 0; to: 1 1 1; dur: 500; easing: easeOutBack">
+        </a-image>
+        <a-circle position="0 0.01 0" rotation="-90 0 0"
+          radius="0.4" color="#000000" opacity="0.2"
+          scale="1 0.6 1"
+          animation__shadow="property: scale; from: 0 0 0; to: 1 0.6 1; dur: 500; easing: easeOutBack">
+        </a-circle>
       </a-entity>
       <a-entity mindar-image-target="targetIndex: 4" id="ar-target-4">
-        <a-image src="../assets/characters/char-doctor.png" position="0 0.5 0" width="1" height="1.5"></a-image>
+        <a-image src="../assets/characters/char-doctor.png"
+          position="0 0.5 0" width="1" height="1.5"
+          animation__bob="property: position; from: 0 0.5 0; to: 0 0.65 0; dur: 2100; dir: alternate; loop: true; easing: easeInOutSine"
+          animation__scale="property: scale; from: 0 0 0; to: 1 1 1; dur: 500; easing: easeOutBack">
+        </a-image>
+        <a-circle position="0 0.01 0" rotation="-90 0 0"
+          radius="0.4" color="#000000" opacity="0.2"
+          scale="1 0.6 1"
+          animation__shadow="property: scale; from: 0 0 0; to: 1 0.6 1; dur: 500; easing: easeOutBack">
+        </a-circle>
       </a-entity>
       <a-entity mindar-image-target="targetIndex: 5" id="ar-target-5">
-        <a-image src="../assets/characters/char-astronaut.png" position="0 0.5 0" width="1" height="1.5"></a-image>
+        <a-image src="../assets/characters/char-astronaut.png"
+          position="0 0.5 0" width="1" height="1.5"
+          animation__bob="property: position; from: 0 0.5 0; to: 0 0.65 0; dur: 2400; dir: alternate; loop: true; easing: easeInOutSine"
+          animation__scale="property: scale; from: 0 0 0; to: 1 1 1; dur: 500; easing: easeOutBack">
+        </a-image>
+        <a-circle position="0 0.01 0" rotation="-90 0 0"
+          radius="0.4" color="#000000" opacity="0.2"
+          scale="1 0.6 1"
+          animation__shadow="property: scale; from: 0 0 0; to: 1 0.6 1; dur: 500; easing: easeOutBack">
+        </a-circle>
       </a-entity>
       <a-camera position="0 0 0"></a-camera>
     </a-scene>
@@ -350,6 +497,30 @@
     </div>
   </div>
 
+
+  <!-- FULLSCREEN CHAT (Test mode) -->
+  <div id="fullscreen-chat">
+    <div class="chat-full-header">
+      <img id="fs-avatar" class="chat-header-avatar" src="" alt="" />
+      <div style="flex:1;min-width:0">
+        <h3 id="fs-career-name"></h3>
+        <div class="chat-full-status">
+          <span class="status-dot"></span>
+          <span data-i18n="ar.online">Online • Ready to chat!</span>
+        </div>
+      </div>
+      <button class="chat-full-close" id="fs-close">✕</button>
+    </div>
+    <div id="fullscreen-messages"></div>
+    <div class="chat-full-input-area">
+      <div id="fullscreen-presets"></div>
+      <div class="chat-full-input-row">
+        <input type="text" id="fullscreen-input" placeholder="Ask me anything..." />
+        <button id="fullscreen-send">Send</button>
+      </div>
+    </div>
+  </div>
+
   <!-- chat-ui hidden shim for chat.js compatibility -->
   <div id="chat-ui" style="display:none"></div>
 
@@ -387,15 +558,30 @@
       let currentCareerId = null;
       let lostTimer = null;
 
+      // DOM refs — bottom panel
       const hint            = document.getElementById('hint');
       const chatPanel       = document.getElementById('chat-panel');
       const chatPanelAvatar = document.getElementById('chat-panel-avatar');
       const chatClose       = document.getElementById('chat-close');
+
+      // DOM refs — fullscreen chat (test mode)
+      const fullscreenChat  = document.getElementById('fullscreen-chat');
+      const fsAvatar        = document.getElementById('fs-avatar');
+      const fsCareerName    = document.getElementById('fs-career-name');
+      const fsClose         = document.getElementById('fs-close');
+      const fsMessages      = document.getElementById('fullscreen-messages');
+      const fsPresets       = document.getElementById('fullscreen-presets');
+      const fsInput         = document.getElementById('fullscreen-input');
+      const fsSend          = document.getElementById('fullscreen-send');
+
+      // DOM refs — transition
       const transOverlay    = document.getElementById('transition-overlay');
       const transCharImg    = document.getElementById('transition-char-img');
       const transCharName   = document.getElementById('transition-char-name');
       const transCharTag    = document.getElementById('transition-char-tag');
       const sparklesCont    = document.getElementById('transition-sparkles');
+
+      // DOM refs — test panel
       const testBtn         = document.getElementById('test-mode-btn');
       const testPanel       = document.getElementById('test-mode-panel');
       const testBackdrop    = document.getElementById('test-backdrop');
@@ -435,73 +621,83 @@
         });
       }
 
-      // ── CHAT PANEL ──────────────────────────────────────────
-      function showChat(career) {
+      // ── BOTTOM HALF-SCREEN CHAT (AR scan mode) ──────────────
+      function showBottomChat(career) {
         currentCareerId = career.id;
         const data = CAREER_DATA[career.id] || {};
         chatPanelAvatar.src = data.img || '';
         chatPanel.classList.add('show');
-
-        // Pass localised name to chat.js
         const localCareer = { ...career, name: getCareerName(career.id) };
         if (typeof initChat === 'function') initChat(localCareer);
       }
 
-      function hideChat() {
+      function hideBottomChat() {
         chatPanel.classList.remove('show');
         hint.style.opacity = '1';
         currentCareerId = null;
       }
 
-      chatClose.addEventListener('click', hideChat);
+      chatClose.addEventListener('click', hideBottomChat);
+
+      // ── FULLSCREEN CHAT (Test mode) ──────────────────────────
+      // Redirect chat.js DOM calls to fullscreen elements when in test mode
+      function showFullscreenChat(career) {
+        const data = CAREER_DATA[career.id] || {};
+        fsAvatar.src = data.img || '';
+        fsCareerName.textContent = getCareerName(career.id);
+        fullscreenChat.classList.add('active');
+
+        // Temporarily remap chat.js DOM IDs to fullscreen elements
+        remapChatIds('fullscreen');
+        const localCareer = { ...career, name: getCareerName(career.id) };
+        if (typeof initChat === 'function') initChat(localCareer);
+      }
+
+      function hideFullscreenChat() {
+        fullscreenChat.classList.remove('active');
+        remapChatIds('panel');
+      }
+
+      fsClose.addEventListener('click', hideFullscreenChat);
+
+      // Remap chat.js getElementById calls to target correct container
+      function remapChatIds(mode) {
+        const orig = document.__origGetById || document.getElementById.bind(document);
+        document.__origGetById = orig;
+
+        if (mode === 'fullscreen') {
+          const map = {
+            'chat-messages':       'fullscreen-messages',
+            'chat-input':          'fullscreen-input',
+            'chat-send':           'fullscreen-send',
+            'chat-presets':        'fullscreen-presets',
+            'chat-character-name': 'fs-career-name',
+          };
+          document.getElementById = function(id) {
+            return orig(map[id] || id);
+          };
+        } else {
+          document.getElementById = orig;
+        }
+      }
 
       // ── AR HANDLERS ─────────────────────────────────────────
       window.onCareerFound = async function (career) {
-        // Cancel any pending hide timer — toy came back into view
         if (lostTimer) { clearTimeout(lostTimer); lostTimer = null; }
         if (isTransitioning) return;
-        // Only show transition if chat is not already open for this career
-        if (currentCareerId !== career.id) {
-          await showTransition(career);
-        }
-        showChat(career);
+        // AR scan: no transition animation, just show bottom chat directly
+        showBottomChat(career);
       };
 
       window.onCareerLost = function () {
         if (isTransitioning) return;
-        // Wait 2 seconds before hiding — brief occlusion won't close the chat
         lostTimer = setTimeout(() => {
-          hideChat();
+          hideBottomChat();
           lostTimer = null;
         }, 2000);
       };
 
-      // ── LANGUAGE SWITCH ──────────────────────────────────────
-      // When locale changes, update all data-i18n elements on this page
-      // AND re-initialise the chat so presets & welcome message update too
-      window.addEventListener('localechange', () => {
-        // 1. Re-apply static translations (hint, nav buttons, test panel)
-        if (typeof I18N !== 'undefined') I18N.applyTranslations();
-
-        // 2. Update input placeholder manually (data-i18n-placeholder)
-        const input = document.getElementById('chat-input');
-        if (input && typeof I18N !== 'undefined') {
-          input.placeholder = I18N.t('chat.placeholder', null) || 'Ask me anything...';
-        }
-
-        // 3. If chat is open, re-init with new locale so name + presets update
-        if (chatPanel.classList.contains('show') && currentCareerId) {
-          const career = { id: currentCareerId, name: getCareerName(currentCareerId) };
-          chatPanelAvatar.src = (CAREER_DATA[currentCareerId] || {}).img || '';
-          if (typeof initChat === 'function') initChat(career);
-        }
-
-        // 4. Update transition overlay names if visible
-        transCharName.textContent = currentCareerId ? getCareerName(currentCareerId) : '';
-        transCharTag.textContent  = currentCareerId ? getCareerTag(currentCareerId)  : '';
-      });
-
-      // ── TEST MODE ────────────────────────────────────────────
+      // ── TEST MODE → FULLSCREEN ───────────────────────────────
       function openTestPanel() {
         testBackdrop.classList.add('show');
         testPanel.style.display = 'block';
@@ -524,19 +720,40 @@
         card.addEventListener('click', async () => {
           const career = JSON.parse(card.dataset.career);
           closeTestPanel();
+          // Test mode: transition then FULLSCREEN chat
           await showTransition(career);
-          showChat(career);
+          showFullscreenChat(career);
         });
+      });
+
+      // ── LANGUAGE SWITCH ──────────────────────────────────────
+      window.addEventListener('localechange', () => {
+        if (typeof I18N !== 'undefined') I18N.applyTranslations();
+
+        const input = document.getElementById('chat-input');
+        if (input && typeof I18N !== 'undefined') {
+          input.placeholder = I18N.t('chat.placeholder', null) || 'Ask me anything...';
+        }
+
+        if (chatPanel.classList.contains('show') && currentCareerId) {
+          const career = { id: currentCareerId, name: getCareerName(currentCareerId) };
+          chatPanelAvatar.src = (CAREER_DATA[currentCareerId] || {}).img || '';
+          remapChatIds('panel');
+          if (typeof initChat === 'function') initChat(career);
+        }
+
+        transCharName.textContent = currentCareerId ? getCareerName(currentCareerId) : '';
+        transCharTag.textContent  = currentCareerId ? getCareerTag(currentCareerId)  : '';
       });
 
       document.addEventListener('keydown', e => {
         if (e.key === 'Escape') {
-          if (testPanel.classList.contains('show')) closeTestPanel();
-          else hideChat();
+          if (fullscreenChat.classList.contains('active')) hideFullscreenChat();
+          else if (testPanel.classList.contains('show')) closeTestPanel();
+          else hideBottomChat();
         }
       });
 
     })();
   </script>
 </body>
-</html>
