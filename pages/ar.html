@@ -23,6 +23,7 @@
       cursor: pointer !important;
       font-family: var(--font-body) !important;
       transition: background 0.2s !important;
+      text-decoration: none !important;
       display: inline-flex !important;
       align-items: center !important;
       gap: 4px !important;
@@ -96,36 +97,25 @@
       to   { opacity:1; transform: translateX(0) scale(1); }
     }
 
-    /* ── BOTTOM CHAT PANEL ── */
+    /* ── BOTTOM CHAT PANEL ── OLD VISUAL STYLE ── */
     #chat-panel {
       position: fixed;
       bottom: 0; left: 0; right: 0;
       z-index: 100;
       background: rgba(255,255,255,0.97);
-      border-radius: 24px 24px 0 0;
-      border-top: 3px solid var(--coral);
-      padding: 10px 16px 20px;
-      max-height: 62vh;
+      border-radius: 20px 20px 0 0;
+      padding: 14px 16px;
+      max-height: 52vh;
       display: none;
       flex-direction: column;
-      gap: 8px;
-      box-shadow: 0 -8px 32px rgba(0,0,0,0.15);
+      gap: 10px;
     }
     #chat-panel.show { display: flex; }
-    #chat-panel::before {
-      content: '';
-      display: block;
-      width: 40px; height: 4px;
-      background: rgba(0,0,0,0.12);
-      border-radius: 2px;
-      margin: 0 auto 4px;
-      flex-shrink: 0;
-    }
 
     .chat-panel-header {
       display: flex; align-items: center; gap: 10px; flex-shrink: 0;
     }
-    .chat-header-avatar {
+    .chat-panel-header .chat-header-avatar {
       width: 38px; height: 38px; border-radius: 50%;
       object-fit: cover; border: 2px solid var(--coral);
       background: var(--cream); flex-shrink: 0;
@@ -133,21 +123,24 @@
     .chat-header-info { flex: 1; min-width: 0; }
     #chat-character-name {
       font-family: var(--font-display);
-      font-size: 15px; font-weight: 800;
+      font-size: 16px; font-weight: 800;
       color: var(--dark); margin: 0;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .chat-header-status {
-      font-size: 11px; color: #6BCB77;
-      font-weight: 600; display: flex;
-      align-items: center; gap: 4px;
+      display: flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 600;
     }
+    .chat-header-status span { color: #4CAF50; }
     .status-dot {
       width: 6px; height: 6px;
-      background: #6BCB77; border-radius: 50%;
-      animation: statusPulse 1.5s infinite;
+      background: #4CAF50; border-radius: 50%;
+      animation: pulse 1.5s infinite;
     }
-    @keyframes statusPulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    @keyframes pulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50% { opacity:0.5; transform:scale(1.2); }
+    }
 
     .chat-close-btn {
       width: 30px; height: 30px; border-radius: 50%;
@@ -157,32 +150,87 @@
     }
     .chat-close-btn:active { background: var(--coral); color: white; }
 
+    /* Messages in bottom panel - old style */
     #chat-messages {
       flex: 1; overflow-y: auto;
-      min-height: 80px;
       display: flex; flex-direction: column;
-      gap: 6px; padding: 2px 0;
+      gap: 8px; padding: 2px 0;
     }
+    #chat-messages .message {
+      max-width: 78%;
+      padding: 8px 12px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.5;
+      font-family: var(--font-body);
+    }
+    #chat-messages .message.user {
+      align-self: flex-end;
+      background: var(--coral);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+    #chat-messages .message.assistant {
+      align-self: flex-start;
+      background: #F0F0F0;
+      color: var(--dark);
+      border-bottom-left-radius: 4px;
+    }
+    #chat-messages .message.assistant.typing-indicator-container {
+      background: transparent;
+      border: none;
+      padding: 0;
+    }
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 12px 16px;
+      background: #F0F0F0;
+      border-radius: 16px;
+      border-bottom-left-radius: 4px;
+      max-width: 60px;
+    }
+    .typing-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--dark);
+      opacity: 0.4;
+      animation: typingDot 1.4s infinite ease-in-out;
+    }
+    .typing-dot:nth-child(1) { animation-delay: 0s; }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typingDot {
+      0%,60%,100% { transform:translateY(0); opacity:0.4; }
+      30% { transform:translateY(-8px); opacity:1; }
+    }
+
     #chat-presets {
       display: flex;
       flex-direction: row;
       flex-wrap: nowrap;
-      gap: 8px;
+      gap: 6px;
       flex-shrink: 0;
       overflow-x: auto;
       scrollbar-width: none;
-      padding: 2px 0 4px;
       -webkit-overflow-scrolling: touch;
     }
     #chat-presets::-webkit-scrollbar { display: none; }
-    /* Force preset buttons to stay on one line */
     #chat-presets .preset-btn {
-      flex-shrink: 0;
-      white-space: nowrap;
-      max-width: 200px;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      flex-shrink: 0; white-space: nowrap;
+      background: #FFF8E1;
+      color: #92620A;
+      border: 1.5px solid #FFD93D;
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-family: var(--font-body);
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
     }
+    #chat-presets .preset-btn:active { background: var(--yellow); }
     #chat-input-row {
       display: flex; gap: 8px; align-items: center; flex-shrink: 0;
     }
@@ -203,25 +251,8 @@
     }
     #chat-send:active { background: #e05555; }
     #chat-send:disabled { opacity: 0.6; }
-    /* Override chat.js preset styles — keep buttons on one horizontal line */
-    #chat-presets {
-      display: flex !important;
-      flex-direction: row !important;
-      flex-wrap: nowrap !important;
-      overflow-x: auto !important;
-      scrollbar-width: none;
-      -webkit-overflow-scrolling: touch;
-      gap: 8px !important;
-      padding-bottom: 4px;
-    }
-    #chat-presets::-webkit-scrollbar { display: none; }
-    #chat-presets .preset-btn,
-    #chat-presets button {
-      flex-shrink: 0 !important;
-      white-space: nowrap !important;
-    }
 
-    /* ── FULLSCREEN CHAT (Test mode only) ── */
+    /* ── FULLSCREEN CHAT (Test mode) — OLD VISUAL STYLE ── */
     #fullscreen-chat {
       position: fixed;
       inset: 0;
@@ -236,81 +267,175 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 14px 16px;
+      padding: 20px 24px;
       background: white;
-      border-bottom: 2px solid rgba(0,0,0,0.06);
+      border-bottom: 3px solid var(--dark);
       flex-shrink: 0;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
     }
-    .chat-header-avatar {
-      width: 44px; height: 44px;
-      border-radius: 50%; object-fit: cover;
-      border: 2px solid var(--coral);
-      flex-shrink: 0;
+    #fullscreen-chat .chat-header-avatar {
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      border: 3px solid var(--dark);
+      box-shadow: 3px 3px 0 var(--dark);
+      object-fit: cover;
     }
     .chat-full-header h3 {
       font-family: var(--font-display);
-      font-size: 16px; font-weight: 800;
-      color: var(--dark); margin: 0; flex: 1;
+      font-size: 24px; font-weight: 800;
+      color: var(--dark); margin: 0 0 4px;
     }
     .chat-full-close {
-      width: 36px; height: 36px;
+      position: absolute;
+      top: 20px; right: 20px;
+      width: 44px; height: 44px;
       border-radius: 50%;
-      background: #f0f0f0; border: none;
-      font-size: 16px; cursor: pointer;
+      background: white;
+      border: 3px solid var(--dark);
       display: flex; align-items: center;
       justify-content: center;
-      transition: all 0.15s; flex-shrink: 0;
+      cursor: pointer;
+      font-size: 24px; font-weight: 700;
+      color: var(--dark);
+      transition: all 0.2s;
+      box-shadow: 3px 3px 0 var(--dark);
+      z-index: 10;
+      flex-shrink: 0;
     }
-    .chat-full-close:active { background: var(--coral); color: white; }
+    .chat-full-close:hover {
+      transform: translate(-2px,-2px);
+      box-shadow: 5px 5px 0 var(--dark);
+      background: var(--coral);
+      color: white;
+    }
 
     .chat-full-status {
-      font-size: 11px; color: #6BCB77;
-      font-weight: 600; display: flex;
-      align-items: center; gap: 4px;
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13px; font-weight: 600;
+    }
+    .chat-full-status span { color: #4CAF50; }
+    .chat-full-status .status-dot {
+      width: 10px; height: 10px;
     }
 
     #fullscreen-messages {
       flex: 1; overflow-y: auto;
       display: flex; flex-direction: column;
-      gap: 8px; padding: 16px;
+      gap: 16px; padding: 24px;
+      background: linear-gradient(180deg, #f8f9fa 0%, #fff 100%);
+    }
+    #fullscreen-messages::-webkit-scrollbar { width: 6px; }
+    #fullscreen-messages::-webkit-scrollbar-track { background: transparent; }
+    #fullscreen-messages::-webkit-scrollbar-thumb { background: var(--dark); border-radius: 10px; }
+
+    #fullscreen-messages .message {
+      max-width: 70%;
+      padding: 14px 18px;
+      border-radius: 24px;
+      font-size: 15px;
+      line-height: 1.6;
+      font-family: var(--font-body);
+    }
+    #fullscreen-messages .message.user {
+      align-self: flex-end;
+      background: var(--coral);
+      color: white;
+      border-bottom-right-radius: 6px;
+      box-shadow: 4px 4px 0 var(--dark);
+    }
+    #fullscreen-messages .message.assistant {
+      align-self: flex-start;
+      background: white;
+      color: var(--dark);
+      border-bottom-left-radius: 6px;
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+      border: 2px solid var(--dark);
+    }
+    #fullscreen-messages .message.assistant.typing-indicator-container {
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      padding: 0;
     }
 
     .chat-full-input-area {
-      padding: 10px 16px 24px;
+      padding: 20px 24px;
       background: white;
-      border-top: 2px solid rgba(0,0,0,0.06);
+      border-top: 3px solid var(--dark);
       flex-shrink: 0;
     }
 
     #fullscreen-presets {
       display: flex;
-      flex-wrap: nowrap;
+      flex-wrap: wrap;
       gap: 8px;
-      overflow-x: auto;
-      scrollbar-width: none;
-      padding-bottom: 8px;
-      -webkit-overflow-scrolling: touch;
+      margin-bottom: 16px;
     }
-    #fullscreen-presets::-webkit-scrollbar { display: none; }
-    #fullscreen-presets .preset-btn { flex-shrink: 0; white-space: nowrap; }
+    #fullscreen-presets .preset-btn {
+      background: #FFF8E1;
+      color: #92620A;
+      border: 2px solid #FFD93D;
+      border-radius: 30px;
+      padding: 10px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: var(--font-body);
+    }
+    #fullscreen-presets .preset-btn:active { background: var(--yellow); }
 
     .chat-full-input-row {
-      display: flex; gap: 8px; align-items: center;
+      display: flex; gap: 12px; align-items: center;
     }
     #fullscreen-input {
-      flex: 1; padding: 10px 14px;
-      border: 2px solid #ddd; border-radius: 20px;
-      font-size: 14px; font-family: var(--font-body);
-      outline: none; background: #fafafa;
+      flex: 1; padding: 16px 20px;
+      border: 3px solid var(--dark);
+      border-radius: 40px;
+      font-size: 15px;
+      font-family: var(--font-body);
+      outline: none;
+      background: #fafafa;
+      transition: all 0.2s;
+      box-shadow: 3px 3px 0 var(--dark);
     }
-    #fullscreen-input:focus { border-color: var(--coral); }
+    #fullscreen-input:focus {
+      border-color: var(--coral);
+      box-shadow: 4px 4px 0 var(--coral);
+      transform: translate(-1px, -1px);
+    }
     #fullscreen-send {
-      padding: 10px 18px; background: var(--coral);
-      color: white; border: none; border-radius: 20px;
-      font-size: 14px; font-family: var(--font-body);
-      font-weight: 700; cursor: pointer; flex-shrink: 0;
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: var(--coral);
+      color: white;
+      border: 3px solid var(--dark);
+      font-size: 24px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 4px 4px 0 var(--dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
     }
-    #fullscreen-send:disabled { opacity: 0.6; }
+    #fullscreen-send:hover {
+      transform: translate(-2px,-2px);
+      box-shadow: 6px 6px 0 var(--dark);
+      background: #ff5252;
+    }
+    #fullscreen-send:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: 4px 4px 0 var(--dark);
+    }
+
+    /* Chat header actions (fix overlap) */
+    .chat-full-header {
+      position: relative;
+    }
   </style>
 </head>
 <body>
@@ -320,7 +445,7 @@
     <a href="home.html" data-i18n="nav.home_arrow">← Home</a>
     <img src="../assets/Brighten-logo.png" alt="Brighten" class="logo-img" />
     <div style="display:flex;gap:8px;align-items:center">
-      <button id="test-mode-btn" data-i18n="ar.test_btn">🧪 Test</button>
+      <button id="test-mode-btn" data-i18n="ar.test_btn">💬 Chat</button>
       <a href="careers.html" data-i18n="nav.careers">Careers</a>
     </div>
   </div>
@@ -330,7 +455,7 @@
 
   <!-- Test Mode Panel -->
   <div id="test-mode-panel">
-    <div class="test-panel-title" data-i18n="ar.test_title">✨ Select a Career to Test</div>
+    <div class="test-panel-title" data-i18n="ar.test_title">💬 Who would you like to chat with?</div>
     <div class="test-career-grid">
       <div class="test-career-card" data-career='{"id":"programmer","name":"Programmer","img":"../assets/characters/char-programmer.png"}'>
         <span class="test-career-emoji">💻</span>
@@ -379,7 +504,6 @@
           animation__bob="property: position; from: 0 0.5 0; to: 0 0.65 0; dur: 2000; dir: alternate; loop: true; easing: easeInOutSine"
           animation__scale="property: scale; from: 0 0 0; to: 1 1 1; dur: 500; easing: easeOutBack">
         </a-image>
-        <!-- Shadow under character -->
         <a-circle position="0 0.01 0" rotation="-90 0 0"
           radius="0.4" color="#000000" opacity="0.2"
           scale="1 0.6 1"
@@ -450,7 +574,7 @@
     </a-scene>
   </div>
 
-  <!-- TRANSITION OVERLAY (保留队友的过场动画) -->
+  <!-- TRANSITION OVERLAY -->
   <div id="transition-overlay">
     <div class="transition-bg">
       <div class="transition-orb"></div>
@@ -478,7 +602,6 @@
     <div class="chat-panel-header">
       <img id="chat-panel-avatar" class="chat-header-avatar" src="" alt="" />
       <div class="chat-header-info">
-        <!-- chat.js writes career name into #chat-character-name -->
         <h3 id="chat-character-name"></h3>
         <div class="chat-header-status">
           <span class="status-dot"></span>
@@ -488,7 +611,6 @@
       <button class="chat-close-btn" id="chat-close">✕</button>
     </div>
 
-    <!-- chat.js writes messages, presets, and listens on input/send -->
     <div id="chat-messages"></div>
     <div id="chat-presets"></div>
     <div id="chat-input-row">
@@ -496,7 +618,6 @@
       <button id="chat-send">Send</button>
     </div>
   </div>
-
 
   <!-- FULLSCREEN CHAT (Test mode) -->
   <div id="fullscreen-chat">
@@ -516,7 +637,7 @@
       <div id="fullscreen-presets"></div>
       <div class="chat-full-input-row">
         <input type="text" id="fullscreen-input" placeholder="Ask me anything..." />
-        <button id="fullscreen-send">Send</button>
+        <button id="fullscreen-send">📤</button>
       </div>
     </div>
   </div>
@@ -564,6 +685,7 @@
       const chatPanelAvatar = document.getElementById('chat-panel-avatar');
       const chatClose       = document.getElementById('chat-close');
 
+      // DOM refs — fullscreen chat
       // DOM refs — fullscreen chat (test mode)
       const fullscreenChat  = document.getElementById('fullscreen-chat');
       const fsAvatar        = document.getElementById('fs-avatar');
@@ -640,14 +762,11 @@
       chatClose.addEventListener('click', hideBottomChat);
 
       // ── FULLSCREEN CHAT (Test mode) ──────────────────────────
-      // Redirect chat.js DOM calls to fullscreen elements when in test mode
       function showFullscreenChat(career) {
         const data = CAREER_DATA[career.id] || {};
         fsAvatar.src = data.img || '';
         fsCareerName.textContent = getCareerName(career.id);
         fullscreenChat.classList.add('active');
-
-        // Temporarily remap chat.js DOM IDs to fullscreen elements
         remapChatIds('fullscreen');
         const localCareer = { ...career, name: getCareerName(career.id) };
         if (typeof initChat === 'function') initChat(localCareer);
@@ -660,11 +779,9 @@
 
       fsClose.addEventListener('click', hideFullscreenChat);
 
-      // Remap chat.js getElementById calls to target correct container
       function remapChatIds(mode) {
         const orig = document.__origGetById || document.getElementById.bind(document);
         document.__origGetById = orig;
-
         if (mode === 'fullscreen') {
           const map = {
             'chat-messages':       'fullscreen-messages',
@@ -685,7 +802,6 @@
       window.onCareerFound = async function (career) {
         if (lostTimer) { clearTimeout(lostTimer); lostTimer = null; }
         if (isTransitioning) return;
-        // AR scan: no transition animation, just show bottom chat directly
         showBottomChat(career);
       };
 
@@ -720,7 +836,6 @@
         card.addEventListener('click', async () => {
           const career = JSON.parse(card.dataset.career);
           closeTestPanel();
-          // Test mode: transition then FULLSCREEN chat
           await showTransition(career);
           showFullscreenChat(career);
         });
@@ -757,3 +872,4 @@
     })();
   </script>
 </body>
+</html>
