@@ -21,9 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         onCareerFound(CAREERS[index]);
       });
 
-      target.addEventListener('targetLost', () => {
-        onCareerLost();
-      });
+     
     });
   });
 });
