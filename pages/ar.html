@@ -410,6 +410,11 @@
       font-family: var(--font-body);
     }
     #fullscreen-presets .preset-btn:active { background: var(--yellow); }
+    #fullscreen-presets .preset-btn:focus-visible { background: #FFF8E1; }
+    #fullscreen-presets .preset-btn {
+      -webkit-tap-highlight-color: transparent;
+      outline: none;
+    }
 
     .chat-full-input-row {
       display: flex; gap: 12px; align-items: center;
