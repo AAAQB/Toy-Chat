@@ -676,22 +676,3 @@
         font-size: 22px;
     }
 }
-
-/* ── PREFERS REDUCED MOTION ── */
-@media (prefers-reduced-motion: reduce) {
-    .test-career-card,
-    .preset-btn,
-    .chat-close-btn,
-    #fullscreen-send,
-    .chat-full-close {
-        transition: none !important;
-        animation: none !important;
-    }
-    .message {
-        animation: none !important;
-    }
-    .typing-dot {
-        animation: none !important;
-        opacity: 0.5 !important;
-    }
-}
