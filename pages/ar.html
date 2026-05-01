@@ -383,9 +383,18 @@
 
     #fullscreen-presets {
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       gap: 8px;
       margin-bottom: 16px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 4px;
+    }
+    #fullscreen-presets::-webkit-scrollbar { display: none; }
+    #fullscreen-presets .preset-btn {
+      flex-shrink: 0;
+      white-space: nowrap;
     }
     #fullscreen-presets .preset-btn {
       background: #FFF8E1;
