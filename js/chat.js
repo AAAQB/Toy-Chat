@@ -1,4 +1,4 @@
-
+﻿
 
 // ============================================
 // CONFIGURATION
@@ -14,40 +14,40 @@ const DEEPSEEK_CONFIG = {
 // ============================================
 const CAREER_PROMPTS = {
     programmer: `You are a friendly Programmer character in a children's educational AR app called Brighten.
-You speak to kids aged 6-12. Provide detailed, engaging responses that are fun and educational.
+You speak to kids aged 6-12. Keep responses medium length (6-8 sentences), fun and educational.
 Use simple words and add emojis occasionally to make it more engaging. You love coding, building apps, and solving problems.
 Your personality: curious, logical, and encouraging. Always be positive and inspire kids to learn about technology.
-When answering questions, provide examples, stories, or interesting facts to make learning fun!`,
+Keep explanations short and sweet.`,
 
     police: `You are a friendly Police Officer character in a children's educational AR app called Brighten.
-You speak to kids aged 6-12. Provide detailed, engaging responses that are fun and educational.
+You speak to kids aged 6-12. Keep responses medium length (6-8 sentences), fun and educational.
 Use simple words and add emojis occasionally to make it more engaging. You protect people and keep communities safe.
 Your personality: brave, helpful, and kind. Always be positive and teach kids about safety and helping others.
-Share interesting stories about your work, explain safety tips in detail, and make learning about community safety exciting!`,
+Share quick safety tips in simple words.`,
 
     teacher: `You are a friendly Teacher character in a children's educational AR app called Brighten.
-You speak to kids aged 6-12. Provide detailed, engaging responses that are fun and educational.
+You speak to kids aged 6-12. Keep responses medium length (6-8 sentences), fun and educational.
 Use simple words and add emojis occasionally to make it more engaging. You love helping children learn new things every day.
 Your personality: patient, encouraging, and creative. Always be positive and inspire a love for learning.
-Share teaching stories, explain concepts in creative ways, and make learning an adventure!`,
+Explain things briefly and creatively.`,
 
     farmer: `You are a friendly Farmer character in a children's educational AR app called Brighten.
-You speak to kids aged 6-12. Provide detailed, engaging responses that are fun and educational.
+You speak to kids aged 6-12. Keep responses medium length (6-8 sentences), fun and educational.
 Use simple words and add emojis occasionally to make it more engaging. You grow food and care for animals on the farm.
 Your personality: hardworking, connected to nature, and nurturing. Always be positive and teach kids where food comes from.
-Share farm stories, explain how things grow, and teach about animals and nature in an engaging way!`,
+Teach about farm life in short, fun bits.`,
 
     doctor: `You are a friendly Doctor character in a children's educational AR app called Brighten.
-You speak to kids aged 6-12. Provide detailed, engaging responses that are fun and educational.
+You speak to kids aged 6-12. Keep responses medium length (6-8 sentences), fun and educational.
 Use simple words and add emojis occasionally to make it more engaging. You help sick people get better and keep everyone healthy.
 Your personality: caring, smart, and calm. Always be positive and teach kids about staying healthy.
-Explain medical concepts simply, share interesting health facts, and make learning about the body fun!`,
+Share quick health tips in simple words.`,
 
     astronaut: `You are a friendly Astronaut character in a children's educational AR app called Brighten.
-You speak to kids aged 6-12. Provide detailed, engaging responses that are fun and educational.
+You speak to kids aged 6-12. Keep responses medium length (6-8 sentences), fun and educational.
 Use simple words and add emojis occasionally to make it more engaging. You explore outer space and do amazing experiments.
 Your personality: adventurous, curious, and brave. Always be positive and inspire kids to dream big about space.
-Share space adventure stories, explain space science simply, and make learning about the universe exciting!`
+Share cool space facts in short bursts.`
 };
 
 const CAREER_PRESETS = {};
@@ -88,7 +88,7 @@ let animationFrame = null;
 function initChat(career) {
     currentCareer = career;
 
-    const systemPrompt = CAREER_PROMPTS[career.id] || `You are a friendly ${career.name} character in a children's educational app. Keep responses short and fun for kids aged 6-12.`;
+    const systemPrompt = CAREER_PROMPTS[career.id] || `You are a friendly ${career.name} character in a children's educational app. Keep responses medium length (6-8 sentences) and fun for kids aged 6-12.`;
 
     // Get localized career name for display
     const localizedCareerName = (typeof I18N !== 'undefined')
@@ -97,7 +97,7 @@ function initChat(career) {
 
     const welcomeText = (typeof I18N !== 'undefined')
       ? I18N.t('chat.welcome', { name: localizedCareerName })
-      : `Hi! I'm a ${career.name}! Ask me anything about my job! 😊`;
+      : `Hi! I'm a ${career.name}! Ask me anything about my job! 馃槉`;
 
     const inputPlaceholder = (typeof I18N !== 'undefined')
       ? I18N.t('chat.placeholder', null)
@@ -108,15 +108,15 @@ function initChat(career) {
         { role: 'assistant', content: welcomeText }
     ];
 
-    // Update UI — use i18n for "Chat with [name]" header
+    // Update UI 鈥?use i18n for "Chat with [name]" header
     const chatNameT = (typeof I18N !== 'undefined') ? I18N.t : (k) => k;
-    document.getElementById('chat-character-name').textContent = chatNameT('chat.header', { name: localizedCareerName }) || `💬 Chat with ${career.name}`;
+    document.getElementById('chat-character-name').textContent = chatNameT('chat.header', { name: localizedCareerName }) || `馃挰 Chat with ${career.name}`;
 
     const messagesContainer = document.getElementById('chat-messages');
     messagesContainer.innerHTML = '';
 
-    // Add welcome message with typewriter effect
-    addMessageWithTypewriter('assistant', welcomeText);
+    // Add welcome message with typewriter effect (no timestamp)
+    addMessageWithTypewriter('assistant', welcomeText, false);
 
     // Update placeholder
     const input = document.getElementById('chat-input');
@@ -192,7 +192,7 @@ function injectAdvancedStyles() {
         }
 
         .message.assistant.typing::after {
-            content: '▊';
+            content: '鈻?;
             animation: blinkCursor 1s infinite;
             margin-left: 3px;
             opacity: 0.8;
@@ -496,12 +496,21 @@ async function initAudio() {
     try {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-        // Create message sent sound
-        const messageBuffer = await createBeepBuffer(800, 0.1, 'sine');
+        // Create message sent sound — playful magical sparkle
+        const messageBuffer = await createRichSound([
+            { freq: 660, duration: 0.05, type: 'sine', decay: 8, volume: 0.5 },
+            { freq: 880, duration: 0.1, type: 'sine', decay: 5, volume: 0.7 },
+            { freq: 1100, duration: 0.2, type: 'sine', decay: 3.5, volume: 0.6 },
+            { freq: 1320, duration: 0.28, type: 'sine', decay: 2.5, volume: 0.4 },
+            { freq: 1760, duration: 0.1, type: 'triangle', decay: 6, volume: 0.15 },
+        ]);
         messageSoundBuffer = messageBuffer;
 
-        // Create typing sound
-        const typingBuffer = await createBeepBuffer(1200, 0.02, 'sine');
+        // Create typing sound — tiny cheerful blip
+        const typingBuffer = await createRichSound([
+            { freq: 880, duration: 0.03, type: 'sine', decay: 20, volume: 0.35 },
+            { freq: 1320, duration: 0.02, type: 'triangle', decay: 25, volume: 0.15 },
+        ]);
         typingSoundBuffer = typingBuffer;
 
     } catch (e) {
@@ -509,17 +518,46 @@ async function initAudio() {
     }
 }
 
-async function createBeepBuffer(frequency, duration, type = 'sine') {
+async function createRichSound(layers) {
     if (!audioContext) return null;
 
     const sampleRate = audioContext.sampleRate;
-    const length = duration * sampleRate;
-    const buffer = audioContext.createBuffer(1, length, sampleRate);
+    let maxLength = 0;
+    for (const layer of layers) {
+        maxLength = Math.max(maxLength, Math.ceil(layer.duration * sampleRate));
+    }
+    const buffer = audioContext.createBuffer(1, maxLength, sampleRate);
     const data = buffer.getChannelData(0);
 
-    for (let i = 0; i < length; i++) {
-        const t = i / sampleRate;
-        data[i] = Math.sin(2 * Math.PI * frequency * t) * Math.exp(-3 * t);
+    for (const layer of layers) {
+        const length = Math.min(Math.ceil(layer.duration * sampleRate), maxLength);
+        for (let i = 0; i < length; i++) {
+            const t = i / sampleRate;
+            let sample = 0;
+            switch (layer.type) {
+                case 'sine':
+                    sample = Math.sin(2 * Math.PI * layer.freq * t);
+                    break;
+                case 'triangle':
+                    sample = 2 * Math.abs(2 * (t * layer.freq - Math.floor(t * layer.freq + 0.5))) - 1;
+                    break;
+                case 'square':
+                    sample = Math.sin(2 * Math.PI * layer.freq * t) > 0 ? 1 : -1;
+                    break;
+            }
+            data[i] += sample * Math.exp(-layer.decay * t) * (layer.volume || 1);
+        }
+    }
+
+    // Normalize
+    let maxVal = 0;
+    for (let i = 0; i < maxLength; i++) {
+        maxVal = Math.max(maxVal, Math.abs(data[i]));
+    }
+    if (maxVal > 0) {
+        for (let i = 0; i < maxLength; i++) {
+            data[i] /= maxVal;
+        }
     }
 
     return buffer;
@@ -555,7 +593,7 @@ function playMessageSentSound() {
 function createEmojiExplosion(x, y) {
     if (!EFFECTS_CONFIG.enableEmojiExplosions) return;
 
-    const emojis = ['✨', '🌟', '⭐', '💫', '🎈', '🎉', '💖', '🌈', '🦄', '🌸'];
+    const emojis = ['🌟', '🎉', '✨', '🎊', '💫', '⭐', '🌈', '🔥', '💥', '🎯'];
     const count = 8;
 
     for (let i = 0; i < count; i++) {
@@ -662,7 +700,7 @@ function setupScrollToBottom() {
 
     const scrollBtn = document.createElement('button');
     scrollBtn.id = 'scroll-to-bottom';
-    scrollBtn.innerHTML = '↓ New messages ↓';
+    scrollBtn.innerHTML = '⬆️ New messages ⬆️';
     chatUI.style.position = 'relative';
     chatUI.appendChild(scrollBtn);
 
@@ -698,7 +736,7 @@ function addMessage(role, content, animate = true) {
     if (role === 'user') {
         const statusSpan = document.createElement('span');
         statusSpan.className = 'message-status sent';
-        statusSpan.innerHTML = '<span class="check">✓</span>';
+        statusSpan.innerHTML = '<span class="check">鉁?/span>';
         timeDiv.appendChild(statusSpan);
 
         // Animate to delivered
@@ -719,7 +757,7 @@ function addMessage(role, content, animate = true) {
     return messageDiv;
 }
 
-function addMessageWithTypewriter(role, content) {
+function addMessageWithTypewriter(role, content, showTimestamp = true) {
     const messageDiv = addMessage(role, '', false);
     messageDiv.classList.add('typing');
 
@@ -742,12 +780,14 @@ function addMessageWithTypewriter(role, content) {
                 messageDiv.classList.remove('typing');
                 messageDiv.innerHTML = formatMessage(originalContent);
 
-                // Add timestamp after typing
-                const timeDiv = document.createElement('div');
-                timeDiv.className = 'message-time';
-                const now = new Date();
-                timeDiv.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-                messageDiv.appendChild(timeDiv);
+                // Add timestamp after typing (unless suppressed)
+                if (showTimestamp) {
+                    const timeDiv = document.createElement('div');
+                    timeDiv.className = 'message-time';
+                    const now = new Date();
+                    timeDiv.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                    messageDiv.appendChild(timeDiv);
+                }
 
                 resolve(messageDiv);
             }
@@ -846,9 +886,9 @@ async function sendMessage(message) {
             body: JSON.stringify({
                 model: DEEPSEEK_CONFIG.model,
                 messages: conversationHistory,
-                max_tokens: 1000,
-                temperature: 0.8,
-                stream: true
+                max_tokens: 1000,  // Increased from 150 to allow more detailed responses
+                temperature: 0.8,  // Slightly increased for more creative responses
+                stream: true // Enable streaming!
             }),
             signal: currentAbortController.signal
         });
@@ -960,10 +1000,10 @@ async function sendMessage(message) {
         // Fallback response
         const fallbackT = (typeof I18N !== 'undefined') ? I18N.t : (k) => '';
         const fallbacks = [
-            fallbackT('chat.fallback1', null) || "That's a great question! Let me think... 🤔",
-            fallbackT('chat.fallback2', null) || "Wow, you're so curious! I love talking about my job! 🌟",
+            fallbackT('chat.fallback1', null) || "That's a great question! Let me think... 馃",
+            fallbackT('chat.fallback2', null) || "Wow, you're so curious! I love talking about my job! 馃専",
             fallbackT('chat.fallback3', null) || "Hmm, let me tell you more about what I do every day!",
-            fallbackT('chat.fallback4', null) || "That's one of my favorite things to talk about! ✨"
+            fallbackT('chat.fallback4', null) || "That's one of my favorite things to talk about! 🌟"
         ];
         const fallback = fallbacks[Math.floor(Math.random() * fallbacks.length)];
 
@@ -1003,4 +1043,4 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = { initChat, sendMessage };
 }
 
-console.log('✨ Brighten Chat Module Loaded - Streaming, Particles & Pure Awesomeness! ✨');
+console.log('⭐Brighten Chat Module Loaded - Streaming, Particles & Pure Awesomeness! ⭐');

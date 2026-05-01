@@ -46,8 +46,8 @@ const I18N = (function () {
       'career.cta_btn': '📷 Scan to Meet Me!',
 
       'ar.hint': '📷 Point at your toy to scan',
-      'ar.test_btn': '🧪 Test',
-      'ar.test_title': '✨ Select a Career to Test',
+      'ar.test_btn': '💬 Chat',
+      'ar.test_title': '💬 Who would you like to chat with?',
       'ar.cancel': 'Cancel',
       'ar.online': 'Online • Ready to chat!',
 
@@ -231,8 +231,8 @@ const I18N = (function () {
       'career.cta_btn': '📷 扫描见我！',
 
       'ar.hint': '📷 将摄像头对准你的玩具进行扫描',
-      'ar.test_btn': '🧪 测试',
-      'ar.test_title': '✨ 选择一个职业进行测试',
+      'ar.test_btn': '💬 聊天',
+      'ar.test_title': '💬 想和谁聊天？',
       'ar.cancel': '取消',
       'ar.online': '在线 · 随时聊天！',
 
@@ -412,8 +412,8 @@ const I18N = (function () {
       'career.cta_btn': '📷 Imbas untuk Berjumpa Saya!',
 
       'ar.hint': '📷 Arahkan ke mainan anda untuk imbas',
-      'ar.test_btn': '🧪 Uji',
-      'ar.test_title': '✨ Pilih Kerjaya untuk Diuji',
+      'ar.test_btn': '💬 Sembang',
+      'ar.test_title': '💬 Nak sembang dengan siapa?',
       'ar.cancel': 'Batal',
       'ar.online': 'Online • Sedia berbual!',
 
