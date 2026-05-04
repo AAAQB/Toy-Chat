@@ -140,9 +140,11 @@ body { overflow: hidden; background: #000; }
 }
 
 .preset-btn:hover {
-  transform: translateY(-2px) scale(1.02);
   box-shadow: 0 4px 12px rgba(255, 217, 61, 0.4);
+  background: #FFF9C4;
 }
+
+.preset-btn:active { background: var(--yellow); }
 
 .preset-btn:active { background: var(--yellow); }
 
