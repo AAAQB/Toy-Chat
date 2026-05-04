@@ -1,4 +1,4 @@
-﻿
+
 
 // ============================================
 // CONFIGURATION
@@ -377,16 +377,16 @@ function injectAdvancedStyles() {
         .preset-btn {
             position: relative;
             overflow: hidden;
-            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.15s ease;
         }
 
         .preset-btn:hover {
-            transform: translateY(-2px) scale(1.02);
             box-shadow: 0 4px 12px rgba(255, 217, 61, 0.4);
+            background: #FFF9C4;
         }
 
         .preset-btn:active {
-            transform: translateY(1px) scale(0.98);
+            background: var(--yellow);
         }
 
         /* Glitch effect */
