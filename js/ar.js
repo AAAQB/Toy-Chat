@@ -19,10 +19,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Toy recognised — trigger chat
       target.addEventListener('targetFound', () => {
+        // Hide old AR character's image & shadow, keep new one visible
+        Object.keys(CAREERS).forEach(otherIdx => {
+          if (otherIdx !== index) {
+            const oldEnt = document.querySelector(`#ar-target-${otherIdx}`);
+            if (oldEnt) {
+              const img = oldEnt.querySelector('a-image');
+              if (img) img.setAttribute('visible', false);
+              const shadow = oldEnt.querySelector('a-circle');
+              if (shadow) shadow.setAttribute('visible', false);
+            }
+          }
+        });
+        const newImg = target.querySelector('a-image');
+        if (newImg) newImg.setAttribute('visible', true);
+        const newShadow = target.querySelector('a-circle');
+        if (newShadow) newShadow.setAttribute('visible', true);
+
         if (typeof onCareerFound === 'function') {
           onCareerFound(CAREERS[index]);
         }
       });
+
+      // Toy left camera view — keep everything visible, do nothing
 
       // Toy left camera view — keep everything visible, do nothing
       // target.addEventListener('targetLost', () => {

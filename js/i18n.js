@@ -174,6 +174,7 @@ const I18N = (function () {
       'chat.header': '💬 Chat with {name}',
       'chat.welcome': "Hi! I'm a {name}! Ask me anything about my job! 😊",
       'chat.placeholder': 'Ask me anything...',
+      'chat.send': 'Send',
 
       'chat.fallback1': "That's a great question! Let me think... 🤔",
       'chat.fallback2': "Wow, you're so curious! I love talking about my job! 🌟",
@@ -355,6 +356,7 @@ const I18N = (function () {
       'chat.header': '💬 和 {name} 聊天',
       'chat.welcome': '嗨！我是 {name}！关于我的工作，你随便问！😊',
       'chat.placeholder': '随便问我什么...',
+      'chat.send': '发送',
 
       'chat.fallback1': '好问题！让我想想…… 🤔',
       'chat.fallback2': '哇，你真好奇！我最喜欢聊我的工作了！🌟',
@@ -536,6 +538,7 @@ const I18N = (function () {
       'chat.header': '💬 Bual dengan {name}',
       'chat.welcome': 'Hai! Saya {name}! Tanya apa sahaja tentang kerja saya! 😊',
       'chat.placeholder': 'Tanya apa-apa...',
+      'chat.send': 'Hantar',
 
       'chat.fallback1': 'Soalan bagus! Biar saya fikir... 🤔',
       'chat.fallback2': 'Wah, awak memang ingin tahu! Saya suka bercakap tentang kerja saya! 🌟',
