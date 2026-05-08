@@ -688,18 +688,18 @@
 
       // ── AR HANDLERS ─────────────────────────────────────────
       window.onCareerFound = async function (career) {
-        if (lostTimer) { clearTimeout(lostTimer); lostTimer = null; }
+       // if (lostTimer) { clearTimeout(lostTimer); lostTimer = null; }
         if (isTransitioning) return;
         // AR scan: no transition animation, just show bottom chat directly
         showBottomChat(career);
       };
 
       window.onCareerLost = function () {
-        if (isTransitioning) return;
-        lostTimer = setTimeout(() => {
-          hideBottomChat();
-          lostTimer = null;
-        }, 2000);
+       // if (isTransitioning) return;
+       // lostTimer = setTimeout(() => {
+       //   hideBottomChat();
+       //   lostTimer = null;
+       // }, 2000);
       };
 
       // ── TEST MODE → FULLSCREEN ───────────────────────────────
