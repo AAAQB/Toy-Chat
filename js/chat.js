@@ -63,8 +63,8 @@ const EFFECTS_CONFIG = {
     enableTypingSound: true,
     enableEmojiExplosions: true,
     enableGlitchEffect: false,
-    typingSpeed: 35,
-    streamChunkSize: 3
+    typingSpeed: 80,
+    streamChunkSize: 1
 };
 
 // ============================================
