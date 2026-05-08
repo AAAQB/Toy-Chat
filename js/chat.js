@@ -4,7 +4,7 @@
 // CONFIGURATION
 // ============================================
 const DEEPSEEK_CONFIG = {
-    apiKey: 'sk-e4859afff68440a38bb1c5c79e87cef8', // 
+    apiKey: 'sk-e4859afff68440a38bb1c5c79e87cef8', //
     endpoint: 'https://api.deepseek.com/v1/chat/completions',
     model: 'deepseek-chat'
 };
@@ -13,53 +13,46 @@ const DEEPSEEK_CONFIG = {
 // CAREER PERSONALITIES & PROMPTS
 // ============================================
 const CAREER_PROMPTS = {
-    programmer: `You are a friendly Programmer character in a children's educational AR app called Brighten. 
-You speak to kids aged 6-12. Provide detailed, engaging responses that are fun and educational.
+    programmer: `You are a friendly Programmer character in a children's educational AR app called Brighten.
+You speak to kids aged 6-12. Keep responses medium length (6-8 sentences), fun and educational.
 Use simple words and add emojis occasionally to make it more engaging. You love coding, building apps, and solving problems.
 Your personality: curious, logical, and encouraging. Always be positive and inspire kids to learn about technology.
-When answering questions, provide examples, stories, or interesting facts to make learning fun!`,
+Keep explanations short and sweet.`,
 
     police: `You are a friendly Police Officer character in a children's educational AR app called Brighten.
-You speak to kids aged 6-12. Provide detailed, engaging responses that are fun and educational.
+You speak to kids aged 6-12. Keep responses medium length (6-8 sentences), fun and educational.
 Use simple words and add emojis occasionally to make it more engaging. You protect people and keep communities safe.
 Your personality: brave, helpful, and kind. Always be positive and teach kids about safety and helping others.
-Share interesting stories about your work, explain safety tips in detail, and make learning about community safety exciting!`,
+Share quick safety tips in simple words.`,
 
     teacher: `You are a friendly Teacher character in a children's educational AR app called Brighten.
-You speak to kids aged 6-12. Provide detailed, engaging responses that are fun and educational.
+You speak to kids aged 6-12. Keep responses medium length (6-8 sentences), fun and educational.
 Use simple words and add emojis occasionally to make it more engaging. You love helping children learn new things every day.
 Your personality: patient, encouraging, and creative. Always be positive and inspire a love for learning.
-Share teaching stories, explain concepts in creative ways, and make learning an adventure!`,
+Explain things briefly and creatively.`,
 
     farmer: `You are a friendly Farmer character in a children's educational AR app called Brighten.
-You speak to kids aged 6-12. Provide detailed, engaging responses that are fun and educational.
+You speak to kids aged 6-12. Keep responses medium length (6-8 sentences), fun and educational.
 Use simple words and add emojis occasionally to make it more engaging. You grow food and care for animals on the farm.
 Your personality: hardworking, connected to nature, and nurturing. Always be positive and teach kids where food comes from.
-Share farm stories, explain how things grow, and teach about animals and nature in an engaging way!`,
+Teach about farm life in short, fun bits.`,
 
     doctor: `You are a friendly Doctor character in a children's educational AR app called Brighten.
-You speak to kids aged 6-12. Provide detailed, engaging responses that are fun and educational.
+You speak to kids aged 6-12. Keep responses medium length (6-8 sentences), fun and educational.
 Use simple words and add emojis occasionally to make it more engaging. You help sick people get better and keep everyone healthy.
 Your personality: caring, smart, and calm. Always be positive and teach kids about staying healthy.
-Explain medical concepts simply, share interesting health facts, and make learning about the body fun!`,
+Share quick health tips in simple words.`,
 
     astronaut: `You are a friendly Astronaut character in a children's educational AR app called Brighten.
-You speak to kids aged 6-12. Provide detailed, engaging responses that are fun and educational.
+You speak to kids aged 6-12. Keep responses medium length (6-8 sentences), fun and educational.
 Use simple words and add emojis occasionally to make it more engaging. You explore outer space and do amazing experiments.
 Your personality: adventurous, curious, and brave. Always be positive and inspire kids to dream big about space.
-Share space adventure stories, explain space science simply, and make learning about the universe exciting!`
+Share cool space facts in short bursts.`
 };
 
-const CAREER_PRESETS = {
-    programmer: ["Can you tell me all about what programmers do every day? 💻", "What's the most exciting project you've ever worked on?", "How did you learn to code and what advice do you have for kids?"],
-    police: ["Can you share some interesting stories about helping people in your community? 🚔", "What does a typical day look like for a police officer?", "How do you train to become a police officer and what skills are important?"],
-    teacher: ["What's your favorite thing about teaching and why? 📚", "Can you share a story about a student who really inspired you?", "How do you make difficult subjects fun and easy to understand?"],
-    farmer: ["Can you tell me all about life on a farm and what you do each day? 🐄", "What's the most interesting thing about growing food and caring for animals?", "How do the seasons affect your work on the farm?"],
-    doctor: ["Can you explain what doctors do to help people stay healthy? 🩺", "What's the most rewarding part of being a doctor?", "How does the human body work and what are some cool facts about it?"],
-    astronaut: ["Can you describe what it's really like to live and work in space? 🚀", "What was the most amazing thing you saw in space?", "How do astronauts train and prepare for space missions?"]
-};
+const CAREER_PRESETS = {};
 
-const DEFAULT_PRESETS = ["Can you tell me all about your job?", "Why is your work important for our community?", "What's the most interesting part of what you do every day?"];
+const DEFAULT_PRESETS = [];
 
 // ============================================
 // VISUAL EFFECTS CONFIG
@@ -94,23 +87,43 @@ let animationFrame = null;
 // ============================================
 function initChat(career) {
     currentCareer = career;
-    
-    const systemPrompt = CAREER_PROMPTS[career.id] || `You are a friendly ${career.name} character in a children's educational app. Keep responses short and fun for kids aged 6-12.`;
-    
+
+    const systemPrompt = CAREER_PROMPTS[career.id] || `You are a friendly ${career.name} character in a children's educational app. Keep responses medium length (6-8 sentences) and fun for kids aged 6-12.`;
+
+    // Get localized career name for display
+    const localizedCareerName = (typeof I18N !== 'undefined')
+      ? (I18N.t('career.' + career.id, null) || career.name)
+      : career.name;
+
+    const welcomeText = (typeof I18N !== 'undefined')
+      ? I18N.t('chat.welcome', { name: localizedCareerName })
+      : `Hi! I'm a ${career.name}! Ask me anything about my job! 馃槉`;
+
+    const inputPlaceholder = (typeof I18N !== 'undefined')
+      ? I18N.t('chat.placeholder', null)
+      : 'Ask me anything...';
+
     conversationHistory = [
         { role: 'system', content: systemPrompt },
-        { role: 'assistant', content: `Hi! I'm a ${career.name}! Ask me anything about my job! 😊` }
+        { role: 'assistant', content: welcomeText }
     ];
-    
-    // Update UI
-    document.getElementById('chat-character-name').textContent = `💬 Chat with ${career.name}`;
-    
+
+    // Update UI 鈥?use i18n for "Chat with [name]" header
+    const chatNameT = (typeof I18N !== 'undefined') ? I18N.t : (k) => k;
+    document.getElementById('chat-character-name').textContent = chatNameT('chat.header', { name: localizedCareerName }) || `馃挰 Chat with ${career.name}`;
+
     const messagesContainer = document.getElementById('chat-messages');
     messagesContainer.innerHTML = '';
-    
-    // Add welcome message with typewriter effect
-    addMessageWithTypewriter('assistant', `Hi! I'm a ${career.name}! Ask me anything about my job! 😊`);
-    
+
+    // Add welcome message with typewriter effect (no timestamp)
+    addMessageWithTypewriter('assistant', welcomeText, false);
+
+    // Update placeholder
+    const input = document.getElementById('chat-input');
+    if (input) input.placeholder = inputPlaceholder;
+    const fsInput = document.getElementById('fullscreen-input');
+    if (fsInput) fsInput.placeholder = inputPlaceholder;
+
     // Setup UI components
     setupPresetButtons(career.id);
     setupEventListeners();
@@ -118,10 +131,10 @@ function initChat(career) {
     setupParticleSystem();
     initAudio();
     injectAdvancedStyles();
-    
+
     // Focus input
     document.getElementById('chat-input').focus();
-    
+
     // Trigger welcome particles
     if (EFFECTS_CONFIG.enableParticles) {
         burstParticles(20, '#FFD93D');
@@ -134,7 +147,7 @@ function initChat(career) {
 function injectAdvancedStyles() {
     const styleId = 'advanced-chat-styles';
     if (document.getElementById(styleId)) return;
-    
+
     const style = document.createElement('style');
     style.id = styleId;
     style.textContent = `
@@ -145,58 +158,58 @@ function injectAdvancedStyles() {
             position: relative;
             overflow: visible;
         }
-        
+
         .message.user {
             transform-origin: bottom right;
             animation: messagePopRight 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
         }
-        
+
         .message.assistant {
             transform-origin: bottom left;
             animation: messagePopLeft 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
-        
+
         @keyframes messagePop {
             from { opacity: 0; transform: scale(0.6) translateY(20px); }
             to { opacity: 1; transform: scale(1) translateY(0); }
         }
-        
+
         @keyframes messagePopRight {
             from { opacity: 0; transform: scale(0.6) translate(15px, 20px); }
             to { opacity: 1; transform: scale(1) translate(0, 0); }
         }
-        
+
         @keyframes messagePopLeft {
             from { opacity: 0; transform: scale(0.6) translate(-15px, 20px); }
             to { opacity: 1; transform: scale(1) translate(0, 0); }
         }
-        
+
         /* Typewriter cursor */
         .message.assistant.typing {
             position: relative;
         }
-        
+
         .message.assistant.typing::after {
-            content: '▊';
+            content: '鈻?;
             animation: blinkCursor 1s infinite;
             margin-left: 3px;
             opacity: 0.8;
             color: var(--coral);
         }
-        
+
         @keyframes blinkCursor {
             0%, 49% { opacity: 1; }
             50%, 100% { opacity: 0; }
         }
-        
+
         /* Streaming glow effect */
         .message.assistant.streaming {
             box-shadow: 0 0 20px rgba(255, 217, 61, 0.5);
             transition: box-shadow 0.3s;
         }
-        
+
         /* Message timestamp */
         .message-time {
             font-size: 9px;
@@ -208,33 +221,33 @@ function injectAdvancedStyles() {
             gap: 4px;
             font-family: var(--font-body);
         }
-        
+
         .message.user .message-time {
             color: rgba(255,255,255,0.8);
         }
-        
+
         .message.assistant .message-time {
             color: var(--dark);
             opacity: 0.5;
         }
-        
+
         .message-status {
             display: inline-flex;
             align-items: center;
             gap: 2px;
         }
-        
+
         .message-status .check {
             font-size: 12px;
         }
-        
+
         .message-status.sent .check { opacity: 0.5; }
         .message-status.delivered .check { opacity: 0.8; }
-        .message-status.read .check { 
+        .message-status.read .check {
             opacity: 1;
             color: var(--yellow);
         }
-        
+
         /* Scroll to bottom button */
         #scroll-to-bottom {
             position: absolute;
@@ -258,24 +271,24 @@ function injectAdvancedStyles() {
             white-space: nowrap;
             backdrop-filter: blur(10px);
         }
-        
+
         #scroll-to-bottom.show {
             opacity: 1;
             transform: translateX(-50%) scale(1);
             pointer-events: auto;
         }
-        
+
         #scroll-to-bottom:hover {
             background: var(--yellow);
             color: var(--dark);
             transform: translateX(-50%) translateY(-4px);
             box-shadow: 0 10px 25px rgba(0,0,0,0.25), 0 0 0 3px rgba(255,217,61,0.5);
         }
-        
+
         #scroll-to-bottom:active {
             transform: translateX(-50%) translateY(-2px);
         }
-        
+
         /* Particle canvas */
         #particle-canvas {
             position: fixed;
@@ -286,7 +299,7 @@ function injectAdvancedStyles() {
             pointer-events: none;
             z-index: 50;
         }
-        
+
         /* Typing indicator dots */
         .typing-indicator {
             display: flex;
@@ -298,7 +311,7 @@ function injectAdvancedStyles() {
             border-bottom-left-radius: 4px;
             max-width: 60px;
         }
-        
+
         .typing-dot {
             width: 8px;
             height: 8px;
@@ -307,16 +320,16 @@ function injectAdvancedStyles() {
             opacity: 0.4;
             animation: typingDot 1.4s infinite ease-in-out;
         }
-        
+
         .typing-dot:nth-child(1) { animation-delay: 0s; }
         .typing-dot:nth-child(2) { animation-delay: 0.2s; }
         .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-        
+
         @keyframes typingDot {
             0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
             30% { transform: translateY(-8px); opacity: 1; }
         }
-        
+
         /* Emoji explosion */
         .emoji-explosion {
             position: fixed;
@@ -325,18 +338,18 @@ function injectAdvancedStyles() {
             font-size: 30px;
             animation: emojiFly 1s ease-out forwards;
         }
-        
+
         @keyframes emojiFly {
             0% { opacity: 1; transform: scale(1) translate(0, 0) rotate(0deg); }
             100% { opacity: 0; transform: scale(0.3) translate(var(--tx), var(--ty)) rotate(360deg); }
         }
-        
+
         /* Send button pulse */
         #chat-send:not(:disabled) {
             position: relative;
             overflow: hidden;
         }
-        
+
         #chat-send:not(:disabled)::after {
             content: '';
             position: absolute;
@@ -349,38 +362,38 @@ function injectAdvancedStyles() {
             transform: translate(-50%, -50%);
             transition: width 0.3s, height 0.3s;
         }
-        
+
         #chat-send:not(:disabled):active::after {
             width: 100px;
             height: 100px;
         }
-        
+
         /* Input focus glow */
         #chat-input:focus {
             box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2), 0 4px 12px rgba(0,0,0,0.1);
         }
-        
+
         /* Preset button enhanced */
         .preset-btn {
             position: relative;
             overflow: hidden;
-            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.15s ease;
         }
-        
+
         .preset-btn:hover {
-            transform: translateY(-2px) scale(1.02);
             box-shadow: 0 4px 12px rgba(255, 217, 61, 0.4);
+            background: #FFF9C4;
         }
-        
+
         .preset-btn:active {
-            transform: translateY(1px) scale(0.98);
+            background: var(--yellow);
         }
-        
+
         /* Glitch effect */
         .glitch {
             animation: glitchEffect 0.3s infinite;
         }
-        
+
         @keyframes glitchEffect {
             0%, 100% { transform: translate(0); }
             20% { transform: translate(-2px, 2px); }
@@ -389,7 +402,7 @@ function injectAdvancedStyles() {
             80% { transform: translate(2px, -2px); }
         }
     `;
-    
+
     document.head.appendChild(style);
 }
 
@@ -398,68 +411,68 @@ function injectAdvancedStyles() {
 // ============================================
 function setupParticleSystem() {
     if (!EFFECTS_CONFIG.enableParticles) return;
-    
+
     particlesCanvas = document.createElement('canvas');
     particlesCanvas.id = 'particle-canvas';
     document.body.appendChild(particlesCanvas);
-    
+
     particlesCtx = particlesCanvas.getContext('2d');
-    
+
     const resizeCanvas = () => {
         particlesCanvas.width = window.innerWidth;
         particlesCanvas.height = window.innerHeight;
     };
-    
+
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
-    
+
     // Particle animation loop
     function animateParticles() {
         if (!particlesCtx) return;
-        
+
         particlesCtx.clearRect(0, 0, particlesCanvas.width, particlesCanvas.height);
-        
+
         particles = particles.filter(p => {
             p.x += p.vx;
             p.y += p.vy;
             p.vy += 0.1; // gravity
             p.life -= p.decay;
             p.alpha = p.life * 0.5;
-            
+
             if (p.life <= 0) return false;
-            
+
             particlesCtx.save();
             particlesCtx.globalAlpha = p.alpha;
             particlesCtx.fillStyle = p.color;
             particlesCtx.beginPath();
             particlesCtx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
             particlesCtx.fill();
-            
+
             // Glow effect
             particlesCtx.shadowColor = p.color;
             particlesCtx.shadowBlur = 10;
             particlesCtx.fill();
             particlesCtx.restore();
-            
+
             return true;
         });
-        
+
         animationFrame = requestAnimationFrame(animateParticles);
     }
-    
+
     animateParticles();
 }
 
 function burstParticles(count, color, x = null, y = null) {
     if (!EFFECTS_CONFIG.enableParticles) return;
-    
+
     const centerX = x || window.innerWidth / 2;
     const centerY = y || window.innerHeight / 2;
-    
+
     for (let i = 0; i < count; i++) {
         const angle = (Math.PI * 2 * i) / count + Math.random() * 0.5;
         const speed = 2 + Math.random() * 8;
-        
+
         particles.push({
             x: centerX,
             y: centerY,
@@ -479,51 +492,89 @@ function burstParticles(count, color, x = null, y = null) {
 // ============================================
 async function initAudio() {
     if (!EFFECTS_CONFIG.enableSoundEffects) return;
-    
+
     try {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        
-        // Create message sent sound
-        const messageBuffer = await createBeepBuffer(800, 0.1, 'sine');
+
+        // Create message sent sound — playful magical sparkle
+        const messageBuffer = await createRichSound([
+            { freq: 660, duration: 0.05, type: 'sine', decay: 8, volume: 0.5 },
+            { freq: 880, duration: 0.1, type: 'sine', decay: 5, volume: 0.7 },
+            { freq: 1100, duration: 0.2, type: 'sine', decay: 3.5, volume: 0.6 },
+            { freq: 1320, duration: 0.28, type: 'sine', decay: 2.5, volume: 0.4 },
+            { freq: 1760, duration: 0.1, type: 'triangle', decay: 6, volume: 0.15 },
+        ]);
         messageSoundBuffer = messageBuffer;
-        
-        // Create typing sound
-        const typingBuffer = await createBeepBuffer(1200, 0.02, 'sine');
+
+        // Create typing sound — tiny cheerful blip
+        const typingBuffer = await createRichSound([
+            { freq: 880, duration: 0.03, type: 'sine', decay: 20, volume: 0.35 },
+            { freq: 1320, duration: 0.02, type: 'triangle', decay: 25, volume: 0.15 },
+        ]);
         typingSoundBuffer = typingBuffer;
-        
+
     } catch (e) {
         console.log('Audio not supported:', e);
     }
 }
 
-async function createBeepBuffer(frequency, duration, type = 'sine') {
+async function createRichSound(layers) {
     if (!audioContext) return null;
-    
+
     const sampleRate = audioContext.sampleRate;
-    const length = duration * sampleRate;
-    const buffer = audioContext.createBuffer(1, length, sampleRate);
-    const data = buffer.getChannelData(0);
-    
-    for (let i = 0; i < length; i++) {
-        const t = i / sampleRate;
-        data[i] = Math.sin(2 * Math.PI * frequency * t) * Math.exp(-3 * t);
+    let maxLength = 0;
+    for (const layer of layers) {
+        maxLength = Math.max(maxLength, Math.ceil(layer.duration * sampleRate));
     }
-    
+    const buffer = audioContext.createBuffer(1, maxLength, sampleRate);
+    const data = buffer.getChannelData(0);
+
+    for (const layer of layers) {
+        const length = Math.min(Math.ceil(layer.duration * sampleRate), maxLength);
+        for (let i = 0; i < length; i++) {
+            const t = i / sampleRate;
+            let sample = 0;
+            switch (layer.type) {
+                case 'sine':
+                    sample = Math.sin(2 * Math.PI * layer.freq * t);
+                    break;
+                case 'triangle':
+                    sample = 2 * Math.abs(2 * (t * layer.freq - Math.floor(t * layer.freq + 0.5))) - 1;
+                    break;
+                case 'square':
+                    sample = Math.sin(2 * Math.PI * layer.freq * t) > 0 ? 1 : -1;
+                    break;
+            }
+            data[i] += sample * Math.exp(-layer.decay * t) * (layer.volume || 1);
+        }
+    }
+
+    // Normalize
+    let maxVal = 0;
+    for (let i = 0; i < maxLength; i++) {
+        maxVal = Math.max(maxVal, Math.abs(data[i]));
+    }
+    if (maxVal > 0) {
+        for (let i = 0; i < maxLength; i++) {
+            data[i] /= maxVal;
+        }
+    }
+
     return buffer;
 }
 
 function playSound(buffer, volume = 0.3) {
     if (!audioContext || !buffer || audioContext.state !== 'running') return;
-    
+
     const source = audioContext.createBufferSource();
     source.buffer = buffer;
-    
+
     const gainNode = audioContext.createGain();
     gainNode.gain.value = volume;
-    
+
     source.connect(gainNode);
     gainNode.connect(audioContext.destination);
-    
+
     source.start();
 }
 
@@ -541,27 +592,27 @@ function playMessageSentSound() {
 // ============================================
 function createEmojiExplosion(x, y) {
     if (!EFFECTS_CONFIG.enableEmojiExplosions) return;
-    
-    const emojis = ['✨', '🌟', '⭐', '💫', '🎈', '🎉', '💖', '🌈', '🦄', '🌸'];
+
+    const emojis = ['🌟', '🎉', '✨', '🎊', '💫', '⭐', '🌈', '🔥', '💥', '🎯'];
     const count = 8;
-    
+
     for (let i = 0; i < count; i++) {
         const emoji = document.createElement('div');
         emoji.className = 'emoji-explosion';
         emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-        
+
         const angle = (Math.PI * 2 * i) / count;
         const distance = 60 + Math.random() * 60;
         const tx = Math.cos(angle) * distance;
         const ty = Math.sin(angle) * distance - 30;
-        
+
         emoji.style.setProperty('--tx', tx + 'px');
         emoji.style.setProperty('--ty', ty + 'px');
         emoji.style.left = x + 'px';
         emoji.style.top = y + 'px';
-        
+
         document.body.appendChild(emoji);
-        
+
         setTimeout(() => emoji.remove(), 1000);
     }
 }
@@ -571,20 +622,35 @@ function createEmojiExplosion(x, y) {
 // ============================================
 function setupPresetButtons(careerId) {
     const presetsContainer = document.getElementById('chat-presets');
-    const presets = CAREER_PRESETS[careerId] || DEFAULT_PRESETS;
-    
-    presetsContainer.innerHTML = presets.map(preset => 
+    const pt = (typeof I18N !== 'undefined') ? I18N.t : (k) => k;
+
+    // Try i18n presets first; fall back to empty
+    const presets = [0, 1, 2].map(i => {
+      const key = 'preset.' + careerId + '.' + i;
+      return pt(key, null);
+    }).filter(Boolean);
+
+    if (presets.length === 0) {
+      // fallback to default presets from i18n
+      [0, 1, 2].forEach(i => {
+        const key = 'preset.default.' + i;
+        const val = pt(key, null);
+        if (val) presets.push(val);
+      });
+    }
+
+    presetsContainer.innerHTML = presets.map(preset =>
         `<button class="preset-btn" data-question="${preset.replace(/"/g, '&quot;')}">${preset}</button>`
     ).join('');
-    
+
     presetsContainer.querySelectorAll('.preset-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             if (isWaitingForResponse) return;
-            
+
             // Visual feedback
             btn.style.transform = 'scale(0.95)';
             setTimeout(() => btn.style.transform = '', 150);
-            
+
             const question = btn.dataset.question;
             sendMessage(question);
         });
@@ -594,13 +660,13 @@ function setupPresetButtons(careerId) {
 function setupEventListeners() {
     const input = document.getElementById('chat-input');
     const sendBtn = document.getElementById('chat-send');
-    
+
     // Remove old listeners
     const newInput = input.cloneNode(true);
     const newSendBtn = sendBtn.cloneNode(true);
     input.parentNode.replaceChild(newInput, input);
     sendBtn.parentNode.replaceChild(newSendBtn, sendBtn);
-    
+
     newInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter' && !isWaitingForResponse) {
             const message = newInput.value.trim();
@@ -608,20 +674,20 @@ function setupEventListeners() {
                 // Ripple effect on send button
                 const rect = newSendBtn.getBoundingClientRect();
                 burstParticles(8, '#FF6B6B', rect.left + rect.width / 2, rect.top + rect.height / 2);
-                
+
                 sendMessage(message);
                 newInput.value = '';
             }
         }
     });
-    
+
     newSendBtn.addEventListener('click', () => {
         if (isWaitingForResponse) return;
         const message = newInput.value.trim();
         if (message) {
             const rect = newSendBtn.getBoundingClientRect();
             burstParticles(8, '#FF6B6B', rect.left + rect.width / 2, rect.top + rect.height / 2);
-            
+
             sendMessage(message);
             newInput.value = '';
         }
@@ -631,18 +697,18 @@ function setupEventListeners() {
 function setupScrollToBottom() {
     const messagesContainer = document.getElementById('chat-messages');
     const chatUI = document.getElementById('chat-ui');
-    
+
     const scrollBtn = document.createElement('button');
     scrollBtn.id = 'scroll-to-bottom';
-    scrollBtn.innerHTML = '↓ New messages ↓';
+    scrollBtn.innerHTML = '⬆️ New messages ⬆️';
     chatUI.style.position = 'relative';
     chatUI.appendChild(scrollBtn);
-    
+
     messagesContainer.addEventListener('scroll', () => {
         const isNearBottom = messagesContainer.scrollHeight - messagesContainer.scrollTop - messagesContainer.clientHeight < 100;
         scrollBtn.classList.toggle('show', !isNearBottom);
     });
-    
+
     scrollBtn.addEventListener('click', () => {
         messagesContainer.scrollTo({
             top: messagesContainer.scrollHeight,
@@ -660,71 +726,73 @@ function addMessage(role, content, animate = true) {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${role}`;
     messageDiv.innerHTML = formatMessage(content);
-    
+
     // Add timestamp
     const timeDiv = document.createElement('div');
     timeDiv.className = 'message-time';
     const now = new Date();
     timeDiv.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-    
+
     if (role === 'user') {
         const statusSpan = document.createElement('span');
         statusSpan.className = 'message-status sent';
-        statusSpan.innerHTML = '<span class="check">✓</span>';
+        statusSpan.innerHTML = '<span class="check">鉁?/span>';
         timeDiv.appendChild(statusSpan);
-        
+
         // Animate to delivered
         setTimeout(() => {
             statusSpan.className = 'message-status delivered';
             statusSpan.innerHTML = '<span class="check">✓✓</span>';
         }, 300);
     }
-    
+
     messageDiv.appendChild(timeDiv);
     messagesContainer.appendChild(messageDiv);
-    
+
     messagesContainer.scrollTo({
         top: messagesContainer.scrollHeight,
         behavior: 'smooth'
     });
-    
+
     return messageDiv;
 }
 
-function addMessageWithTypewriter(role, content) {
+function addMessageWithTypewriter(role, content, showTimestamp = true) {
     const messageDiv = addMessage(role, '', false);
     messageDiv.classList.add('typing');
-    
+
     const originalContent = content;
     let index = 0;
     messageDiv.innerHTML = '';
-    
+
     return new Promise(resolve => {
         const typeNextChar = () => {
             if (index < originalContent.length) {
                 messageDiv.innerHTML = formatMessage(originalContent.substring(0, index + 1));
-                
+
                 if (EFFECTS_CONFIG.enableTypingSound && index % 2 === 0) {
                     playTypingSound();
                 }
-                
+
                 index++;
                 setTimeout(typeNextChar, EFFECTS_CONFIG.typingSpeed);
             } else {
                 messageDiv.classList.remove('typing');
                 messageDiv.innerHTML = formatMessage(originalContent);
-                
-                // Add timestamp after typing
-                const timeDiv = document.createElement('div');
-                timeDiv.className = 'message-time';
-                const now = new Date();
-                timeDiv.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-                messageDiv.appendChild(timeDiv);
-                
+
+                // Add timestamp after typing (unless suppressed)
+                if (showTimestamp) {
+                    const timeDiv = document.createElement('div');
+                    timeDiv.className = 'message-time';
+                    const now = new Date();
+                    timeDiv.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                    messageDiv.appendChild(timeDiv);
+                }
+
                 resolve(messageDiv);
             }
         };
-        
+
         typeNextChar();
     });
 }
@@ -732,16 +800,16 @@ function addMessageWithTypewriter(role, content) {
 function formatMessage(text) {
     // URL auto-linking
     text = text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color: inherit; text-decoration: underline;">$1</a>');
-    
+
     // Bold
     text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    
+
     // Italic
     text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
-    
+
     // Code
     text = text.replace(/`(.*?)`/g, '<code style="background: rgba(0,0,0,0.1); padding: 2px 6px; border-radius: 6px; font-family: monospace;">$1</code>');
-    
+
     return text;
 }
 
@@ -774,41 +842,41 @@ function removeTypingIndicator() {
 // ============================================
 async function sendMessage(message) {
     if (!currentCareer || isWaitingForResponse) return;
-    
+
     // Play sound and effects
     playMessageSentSound();
-    
+
     // Resume audio context on user interaction
     if (audioContext && audioContext.state === 'suspended') {
         await audioContext.resume();
     }
-    
+
     // Add user message
     addMessage('user', message);
     conversationHistory.push({ role: 'user', content: message });
-    
+
     // Show typing indicator
     showTypingIndicator();
-    
+
     isWaitingForResponse = true;
     const sendBtn = document.getElementById('chat-send');
     const input = document.getElementById('chat-input');
     sendBtn.disabled = true;
     input.disabled = true;
-    
+
     // Glitch effect on button
     if (EFFECTS_CONFIG.enableGlitchEffect) {
         sendBtn.classList.add('glitch');
         setTimeout(() => sendBtn.classList.remove('glitch'), 500);
     }
-    
+
     try {
         // Cancel any ongoing request
         if (currentAbortController) {
             currentAbortController.abort();
         }
         currentAbortController = new AbortController();
-        
+
         const response = await fetch(DEEPSEEK_CONFIG.endpoint, {
             method: 'POST',
             headers: {
@@ -818,68 +886,68 @@ async function sendMessage(message) {
             body: JSON.stringify({
                 model: DEEPSEEK_CONFIG.model,
                 messages: conversationHistory,
-                max_tokens: 1000,  
-                temperature: 0.8,  
-                stream: true 
+                max_tokens: 1000,  // Increased from 150 to allow more detailed responses
+                temperature: 0.8,  // Slightly increased for more creative responses
+                stream: true // Enable streaming!
             }),
             signal: currentAbortController.signal
         });
-        
+
         if (!response.ok) {
             throw new Error(`API error: ${response.status}`);
         }
-        
+
         // Remove typing indicator
         removeTypingIndicator();
-        
+
         // Create message bubble for streaming
         const messagesContainer = document.getElementById('chat-messages');
         const messageDiv = document.createElement('div');
         messageDiv.className = 'message assistant streaming';
         messageDiv.id = 'streaming-message';
         messagesContainer.appendChild(messageDiv);
-        
+
         // Process stream
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
         let fullContent = '';
         let charBuffer = '';
-        
+
         while (true) {
             const { done, value } = await reader.read();
             if (done) break;
-            
+
             const chunk = decoder.decode(value, { stream: true });
             const lines = chunk.split('\n');
-            
+
             for (const line of lines) {
                 if (line.startsWith('data: ')) {
                     const data = line.slice(6);
                     if (data === '[DONE]') continue;
-                    
+
                     try {
                         const parsed = JSON.parse(data);
                         const content = parsed.choices[0]?.delta?.content || '';
                         if (content) {
                             charBuffer += content;
-                            
+
                             // Stream characters for typewriter effect
                             while (charBuffer.length >= EFFECTS_CONFIG.streamChunkSize) {
                                 fullContent += charBuffer.slice(0, EFFECTS_CONFIG.streamChunkSize);
                                 charBuffer = charBuffer.slice(EFFECTS_CONFIG.streamChunkSize);
-                                
+
                                 messageDiv.innerHTML = formatMessage(fullContent);
                                 messageDiv.classList.add('typing');
-                                
+
                                 if (fullContent.length % 5 === 0) {
                                     playTypingSound();
                                 }
-                                
+
                                 messagesContainer.scrollTo({
                                     top: messagesContainer.scrollHeight,
                                     behavior: 'smooth'
                                 });
-                                
+
                                 await new Promise(resolve => setTimeout(resolve, 15));
                             }
                         }
@@ -889,31 +957,31 @@ async function sendMessage(message) {
                 }
             }
         }
-        
+
         // Flush remaining buffer
         if (charBuffer) {
             fullContent += charBuffer;
             messageDiv.innerHTML = formatMessage(fullContent);
         }
-        
+
         // Finalize message
         messageDiv.classList.remove('typing', 'streaming');
         messageDiv.id = '';
-        
+
         // Add timestamp
         const timeDiv = document.createElement('div');
         timeDiv.className = 'message-time';
         const now = new Date();
         timeDiv.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
         messageDiv.appendChild(timeDiv);
-        
+
         // Burst particles on complete
         const rect = messageDiv.getBoundingClientRect();
         burstParticles(15, '#4ECDC4', rect.left + rect.width / 2, rect.top + rect.height / 2);
-        
+
         // Add to history
         conversationHistory.push({ role: 'assistant', content: fullContent });
-        
+
         // Trim history if too long
         if (conversationHistory.length > 21) {
             conversationHistory = [
@@ -921,23 +989,24 @@ async function sendMessage(message) {
                 ...conversationHistory.slice(-20)
             ];
         }
-        
+
         // Emoji explosion on complete!
         createEmojiExplosion(rect.left + rect.width / 2, rect.top);
-        
+
     } catch (error) {
         console.error('Chat error:', error);
         removeTypingIndicator();
-        
+
         // Fallback response
+        const fallbackT = (typeof I18N !== 'undefined') ? I18N.t : (k) => '';
         const fallbacks = [
-            "That's a great question! Let me think... 🤔",
-            "Wow, you're so curious! I love talking about my job! 🌟",
-            "Hmm, let me tell you more about what I do every day!",
-            "That's one of my favorite things to talk about! ✨"
+            fallbackT('chat.fallback1', null) || "That's a great question! Let me think... 馃",
+            fallbackT('chat.fallback2', null) || "Wow, you're so curious! I love talking about my job! 馃専",
+            fallbackT('chat.fallback3', null) || "Hmm, let me tell you more about what I do every day!",
+            fallbackT('chat.fallback4', null) || "That's one of my favorite things to talk about! 🌟"
         ];
         const fallback = fallbacks[Math.floor(Math.random() * fallbacks.length)];
-        
+
         await addMessageWithTypewriter('assistant', fallback);
         conversationHistory.push({ role: 'assistant', content: fallback });
     } finally {
@@ -974,4 +1043,4 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = { initChat, sendMessage };
 }
 
-console.log('✨ Brighten Chat Module Loaded - Streaming, Particles & Pure Awesomeness! ✨');
+console.log('⭐Brighten Chat Module Loaded - Streaming, Particles & Pure Awesomeness! ⭐');
