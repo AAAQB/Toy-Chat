@@ -81,7 +81,7 @@
       `;
 
       document.getElementById('career-does').innerHTML = `
-        <h2>${t('career.does', { name: localizedName })}</h2>
+        <h2>${t('career.does', { name: localizedName }).replace(/\ba(?= [AEIOUaeiou])/, 'an')}</h2>
         <div class="do-list">
           ${does.map(d => `
             <div class="do-item">
