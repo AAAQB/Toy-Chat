@@ -96,8 +96,8 @@ function initChat(career) {
       : career.name;
 
     const welcomeText = (typeof I18N !== 'undefined')
-      ? I18N.t('chat.welcome', { name: localizedCareerName })
-      : `Hi! I'm a ${career.name}! Ask me anything about my job! 馃槉`;
+      ? I18N.t('chat.welcome', { name: localizedCareerName }).replace(/\ba(?= [AEIOUaeiou])/, 'an')
+      : `Hi! I'm a ${career.name}! Ask me anything about my job! 😊`.replace(/\ba(?= [AEIOUaeiou])/, 'an');
 
     const inputPlaceholder = (typeof I18N !== 'undefined')
       ? I18N.t('chat.placeholder', null)
