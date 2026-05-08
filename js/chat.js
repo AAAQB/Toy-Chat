@@ -6,7 +6,7 @@
 const DEEPSEEK_CONFIG = {
     apiKey: 'sk-e4859afff68440a38bb1c5c79e87cef8', //
     endpoint: 'https://api.deepseek.com/v1/chat/completions',
-    model: 'deepseek-chat'
+    model: 'deepseek-v4-flash'
 };
 
 // ============================================
