@@ -24,12 +24,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-      // Toy left camera view — hide chat after delay
-      target.addEventListener('targetLost', () => {
-        if (typeof onCareerLost === 'function') {
-          onCareerLost();
-        }
-      });
+      // Toy left camera view — keep everything visible, do nothing
+      // target.addEventListener('targetLost', () => {
+      //   if (typeof onCareerLost === 'function') {
+      //     onCareerLost();
+      //   }
+      // });
     });
   });
 });
