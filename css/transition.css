@@ -1,7 +1,5 @@
 
-/* ============================================ */
-/* OVERLAY CONTAINER */
-/* ============================================ */
+
 #transition-overlay {
     position: fixed;
     inset: 0;
@@ -22,9 +20,6 @@
     pointer-events: auto;
 }
 
-/* ============================================ */
-/* ANIMATED BACKGROUND */
-/* ============================================ */
 .transition-bg {
     position: absolute;
     inset: 0;
@@ -73,9 +68,6 @@
     66% { transform: translate(-20px, 20px) scale(0.9); }
 }
 
-/* ============================================ */
-/* CHARACTER REVEAL ANIMATION */
-/* ============================================ */
 .transition-character {
     position: relative;
     z-index: 10;
@@ -118,9 +110,6 @@
     50% { transform: translateY(-20px); }
 }
 
-/* ============================================ */
-/* CAREER NAME REVEAL */
-/* ============================================ */
 .transition-career-name {
     margin-top: 20px;
     font-family: var(--font-display);
@@ -175,9 +164,6 @@
     }
 }
 
-/* ============================================ */
-/* SPARKLE PARTICLES */
-/* ============================================ */
 .transition-sparkle {
     position: absolute;
     z-index: 5;
@@ -191,9 +177,6 @@
     50% { opacity: 1; transform: scale(1) rotate(180deg); }
 }
 
-/* ============================================ */
-/* LOADING BAR */
-/* ============================================ */
 .transition-loading {
     position: absolute;
     bottom: 80px;
@@ -260,9 +243,6 @@
     100% { width: 100%; }
 }
 
-/* ============================================ */
-/* FULLSCREEN CHAT OVERLAY */
-/* ============================================ */
 #fullscreen-chat {
     position: fixed;
     inset: 0;
@@ -282,7 +262,6 @@
     transform: scale(1);
 }
 
-/* Chat Header */
 .chat-full-header {
     padding: 20px 24px;
     background: white;
@@ -393,7 +372,6 @@
     box-shadow: 0px 0px 0 var(--dark);
 }
 
-/* Chat Messages Area */
 .chat-full-messages {
     flex: 1;
     overflow-y: auto;
@@ -404,7 +382,6 @@
     background: linear-gradient(180deg, #f8f9fa 0%, #fff 100%);
 }
 
-/* Custom scrollbar */
 .chat-full-messages::-webkit-scrollbar {
     width: 6px;
 }
@@ -419,7 +396,6 @@
     opacity: 0.3;
 }
 
-/* Message bubbles - fullscreen version */
 .chat-full-messages .message {
     max-width: 70%;
     padding: 14px 18px;
@@ -471,7 +447,6 @@
     border: 2px solid var(--dark);
 }
 
-/* Chat Input Area */
 .chat-full-input-area {
     padding: 20px 24px;
     background: white;
@@ -567,7 +542,6 @@
     box-shadow: 4px 4px 0 var(--dark);
 }
 
-/* Close button */
 .chat-full-close {
     position: absolute;
     top: 20px;
@@ -596,9 +570,6 @@
     color: white;
 }
 
-/* ============================================ */
-/* RESPONSIVE */
-/* ============================================ */
 @media (max-width: 600px) {
     .transition-character-img {
         width: 140px;

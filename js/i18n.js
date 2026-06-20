@@ -1,7 +1,4 @@
-// ============================================
-// BRIGHTEN — i18n / Localization Module
-// Supports: en (English), zh (中文), ms (Bahasa Melayu)
-// ============================================
+
 
 const I18N = (function () {
   'use strict';
@@ -9,7 +6,7 @@ const I18N = (function () {
   const SUPPORTED_LOCALES = ['en', 'zh', 'ms'];
   const STORAGE_KEY = 'brighten-lang';
 
-  // ─── Translations ─────────────────────────
+  
   const LOCALE = {
     en: {
       'nav.home': 'Home',
@@ -72,7 +69,7 @@ const I18N = (function () {
       'desc.doctor': 'Heals people and saves lives',
       'desc.astronaut': 'Explores the universe beyond Earth',
 
-      // Career intro
+      
       'intro.programmer': 'Programmers write instructions for computers to follow. They build the apps, games, and websites you use every day!',
       'intro.police': 'Police officers protect people and keep communities safe. They are always ready to help when someone is in trouble!',
       'intro.teacher': 'Teachers help children learn new things every day. They make learning fun and exciting for everyone in the classroom!',
@@ -80,7 +77,7 @@ const I18N = (function () {
       'intro.doctor': 'Doctors help sick people get better and keep healthy people well. They study the human body for many years to become experts!',
       'intro.astronaut': 'Astronauts travel beyond Earth to explore outer space. They live on space stations, conduct experiments, and push the limits of human discovery!',
 
-      // Career 'does' titles
+      
       'does.do_title.programmer.0': 'Write code',
       'does.do_desc.programmer.0': 'Type special instructions that tell computers exactly what to do',
       'does.do_title.programmer.1': 'Build games & apps',
@@ -123,7 +120,7 @@ const I18N = (function () {
       'does.do_title.astronaut.2': 'Do spacewalks',
       'does.do_desc.astronaut.2': 'Float outside the spacecraft to repair equipment',
 
-      // Career facts
+      
       'fact.programmer.0': '🌍 There are over 700 different programming languages in the world!',
       'fact.programmer.1': '🎮 The first video game was created in 1958 — it was a simple tennis game.',
       'fact.programmer.2': '🤖 Programmers are now teaching computers to think and learn on their own.',
@@ -148,7 +145,7 @@ const I18N = (function () {
       'fact.astronaut.1': '🌍 Astronauts on the ISS see 16 sunrises and sunsets every day.',
       'fact.astronaut.2': '🍕 Astronauts can\'t eat pizza in space — crumbs float and damage equipment!',
 
-      // Preset questions (shown as quick-reply buttons)
+      
       'preset.programmer.0': 'Can you tell me all about what programmers do every day? 💻',
       'preset.programmer.1': "What's the most exciting project you've ever worked on?",
       'preset.programmer.2': "How did you learn to code and what advice do you have for kids?",
@@ -562,14 +559,14 @@ const I18N = (function () {
     },
   };
 
-  // ─── Locale helpers ─────────────────────────
+  
   let currentLocale = 'en';
 
   function detectLocale() {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored && SUPPORTED_LOCALES.includes(stored)) return stored;
-    } catch (_) { /* noop */ }
+    } catch (_) {  }
     return 'en';
   }
 
@@ -578,7 +575,7 @@ const I18N = (function () {
     currentLocale = locale;
     try {
       localStorage.setItem(STORAGE_KEY, locale);
-    } catch (_) { /* noop */ }
+    } catch (_) {  }
     document.documentElement.lang = locale;
     window.dispatchEvent(new CustomEvent('localechange', { detail: locale }));
     applyTranslations();
@@ -599,7 +596,7 @@ const I18N = (function () {
     return val;
   }
 
-  // ─── Translate page elements ────────────────
+  
   function applyTranslations() {
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.getAttribute('data-i18n');
@@ -619,21 +616,21 @@ const I18N = (function () {
     document.querySelectorAll('[data-i18n-title]').forEach(el => {
       el.setAttribute('title', t(el.getAttribute('data-i18n-title')));
     });
-    // Update globe badge
+    
     const badge = document.querySelector('.lang-globe-badge');
     if (badge) {
       const codes = { en: 'EN', zh: '中文', ms: 'BM' };
       badge.textContent = codes[currentLocale] || 'EN';
     }
-    // Apply ZCOOL XiaoWei font for Chinese text
+    
     if (document.body) {
       document.body.style.fontFamily = currentLocale === 'zh'
         ? "'Nunito','ZCOOL XiaoWei',sans-serif"
         : '';
     }
-    // --font-display can't hold comma-separated font stacks via setProperty reliably.
-    // Instead, set a data attribute on html and use CSS selector.
-    // Push Chinese hero title slightly right to offset fullwidth punctuation visual imbalance
+    
+    
+    
     const heroTitle = document.querySelector('.hero h1');
     if (heroTitle) {
       heroTitle.style.paddingLeft = currentLocale === 'zh' ? '0.3em' : '0px';
@@ -641,18 +638,18 @@ const I18N = (function () {
     document.documentElement.dataset.locale = currentLocale;
   }
 
-  // ─── Globe dropdown UI (only on home page) ──
+  
   function createGlobeDropdown() {
     const container = document.createElement('div');
     container.className = 'lang-globe-wrap';
     container.setAttribute('data-i18n-ignore', '');
 
-    // Globe trigger button
+    
     const btn = document.createElement('button');
     btn.className = 'lang-globe-btn';
     btn.type = 'button';
     btn.setAttribute('aria-label', 'Switch language');
-    // Earth icon using SVG inline (matches the bold/playful style)
+    
     btn.innerHTML = `<svg class="lang-globe-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="10"/>
       <ellipse cx="12" cy="12" rx="4" ry="10"/>
@@ -660,7 +657,7 @@ const I18N = (function () {
     </svg>
     <span class="lang-globe-badge">EN</span>`;
 
-    // Dropdown panel
+    
     const panel = document.createElement('div');
     panel.className = 'lang-globe-panel';
 
@@ -707,14 +704,14 @@ const I18N = (function () {
       else openDropdown();
     });
 
-    // Click outside closes
+    
     document.addEventListener('click', (e) => {
       if (open && !container.contains(e.target)) {
         closeDropdown();
       }
     });
 
-    // Close on Escape
+    
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && open) closeDropdown();
     });
@@ -722,12 +719,12 @@ const I18N = (function () {
     return container;
   }
 
-  // ─── Init ───────────────────────────────────
+  
   function init() {
     currentLocale = detectLocale();
     document.documentElement.lang = currentLocale;
 
-    // Inject styles only once
+    
     if (!document.getElementById('lang-globe-styles')) {
       const style = document.createElement('style');
       style.id = 'lang-globe-styles';
@@ -883,7 +880,7 @@ const I18N = (function () {
       document.head.appendChild(style);
     }
 
-    // Insert the globe dropdown ONLY if we're on the home page
+    
     if (window.location.pathname.endsWith('home.html') || window.location.pathname.endsWith('/') || window.location.pathname.endsWith('/pages/') || window.location.pathname === '' || /\/toy-chat\/?$/.test(window.location.pathname)) {
       const navLinks = document.querySelector('nav .nav-links');
       if (navLinks && !navLinks.querySelector('.lang-globe-wrap')) {
@@ -893,7 +890,7 @@ const I18N = (function () {
 
     applyTranslations();
 
-    // Ensure ZCOOL XiaoWei font is loaded
+    
     const zhFontId = 'zh-font-stylesheet';
     if (!document.getElementById(zhFontId)) {
       const link = document.createElement('link');
@@ -904,7 +901,7 @@ const I18N = (function () {
     }
   }
 
-  // ─── On DOM ready ───────────────────────────
+  
   function onReady() {
     init();
   }
@@ -915,7 +912,7 @@ const I18N = (function () {
     onReady();
   }
 
-  // ─── Public API ─────────────────────────────
+  
   return {
     t,
     getLocale,
