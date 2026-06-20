@@ -15,7 +15,6 @@
   --font-body:    'Nunito', sans-serif;
 }
 
-/* Chinese font override: ZCOOL XiaoWei (cream style) */
 html[data-locale="zh"] {
   --font-display: 'Baloo 2', 'ZCOOL XiaoWei', cursive;
   --font-body:    'Nunito', 'ZCOOL XiaoWei', sans-serif;

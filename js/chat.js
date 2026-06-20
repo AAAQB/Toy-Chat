@@ -1,17 +1,17 @@
 
 
-// ============================================
-// CONFIGURATION
-// ============================================
+
+
+
 const DEEPSEEK_CONFIG = {
-    apiKey: 'sk-e4859afff68440a38bb1c5c79e87cef8', //
+    apiKey: 'sk-e4859afff68440a38bb1c5c79e87cef8', 
     endpoint: 'https://api.deepseek.com/v1/chat/completions',
     model: 'deepseek-v4-flash'
 };
 
-// ============================================
-// CAREER PERSONALITIES & PROMPTS
-// ============================================
+
+
+
 const CAREER_PROMPTS = {
     programmer: `You are a friendly Programmer character in a children's educational AR app called Brighten.
 You speak to kids aged 6-12. Keep responses short (2-3 sentences), fun and educational.
@@ -54,9 +54,9 @@ const CAREER_PRESETS = {};
 
 const DEFAULT_PRESETS = [];
 
-// ============================================
-// VISUAL EFFECTS CONFIG
-// ============================================
+
+
+
 const EFFECTS_CONFIG = {
     enableParticles: true,
     enableSoundEffects: true,
@@ -67,9 +67,9 @@ const EFFECTS_CONFIG = {
     streamChunkSize: 3
 };
 
-// ============================================
-// STATE MANAGEMENT
-// ============================================
+
+
+
 let currentCareer = null;
 let conversationHistory = [];
 let isWaitingForResponse = false;
@@ -82,15 +82,15 @@ let particlesCtx = null;
 let particles = [];
 let animationFrame = null;
 
-// ============================================
-// INITIALIZATION
-// ============================================
+
+
+
 function initChat(career) {
     currentCareer = career;
 
     const systemPrompt = CAREER_PROMPTS[career.id] || `You are a friendly ${career.name} character in a children's educational app. Keep responses medium length (6-8 sentences) and fun for kids aged 6-12.`;
 
-    // Get localized career name for display
+    
     const localizedCareerName = (typeof I18N !== 'undefined')
       ? (I18N.t('career.' + career.id, null) || career.name)
       : career.name;
@@ -108,23 +108,23 @@ function initChat(career) {
         { role: 'assistant', content: welcomeText }
     ];
 
-    // Update UI 鈥?use i18n for "Chat with [name]" header
+    
     const chatNameT = (typeof I18N !== 'undefined') ? I18N.t : (k) => k;
     document.getElementById('chat-character-name').textContent = chatNameT('chat.header', { name: localizedCareerName }) || `馃挰 Chat with ${career.name}`;
 
     const messagesContainer = document.getElementById('chat-messages');
     messagesContainer.innerHTML = '';
 
-    // Add welcome message with typewriter effect (no timestamp)
+    
     addMessageWithTypewriter('assistant', welcomeText, false);
 
-    // Update placeholder
+    
     const input = document.getElementById('chat-input');
     if (input) input.placeholder = inputPlaceholder;
     const fsInput = document.getElementById('fullscreen-input');
     if (fsInput) fsInput.placeholder = inputPlaceholder;
 
-    // Setup UI components
+    
     setupPresetButtons(career.id);
     setupEventListeners();
     setupScrollToBottom();
@@ -132,18 +132,18 @@ function initChat(career) {
     initAudio();
     injectAdvancedStyles();
 
-    // Focus input
+    
     document.getElementById('chat-input').focus();
 
-    // Trigger welcome particles
+    
     if (EFFECTS_CONFIG.enableParticles) {
         burstParticles(20, '#FFD93D');
     }
 }
 
-// ============================================
-// ADVANCED STYLES INJECTION
-// ============================================
+
+
+
 function injectAdvancedStyles() {
     const styleId = 'advanced-chat-styles';
     if (document.getElementById(styleId)) return;
@@ -406,9 +406,9 @@ function injectAdvancedStyles() {
     document.head.appendChild(style);
 }
 
-// ============================================
-// PARTICLE SYSTEM
-// ============================================
+
+
+
 function setupParticleSystem() {
     if (!EFFECTS_CONFIG.enableParticles) return;
 
@@ -426,7 +426,7 @@ function setupParticleSystem() {
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
-    // Particle animation loop
+    
     function animateParticles() {
         if (!particlesCtx) return;
 
@@ -435,7 +435,7 @@ function setupParticleSystem() {
         particles = particles.filter(p => {
             p.x += p.vx;
             p.y += p.vy;
-            p.vy += 0.1; // gravity
+            p.vy += 0.1; 
             p.life -= p.decay;
             p.alpha = p.life * 0.5;
 
@@ -448,7 +448,7 @@ function setupParticleSystem() {
             particlesCtx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
             particlesCtx.fill();
 
-            // Glow effect
+            
             particlesCtx.shadowColor = p.color;
             particlesCtx.shadowBlur = 10;
             particlesCtx.fill();
@@ -487,16 +487,16 @@ function burstParticles(count, color, x = null, y = null) {
     }
 }
 
-// ============================================
-// AUDIO SYSTEM
-// ============================================
+
+
+
 async function initAudio() {
     if (!EFFECTS_CONFIG.enableSoundEffects) return;
 
     try {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-        // Create message sent sound — playful magical sparkle
+        
         const messageBuffer = await createRichSound([
             { freq: 660, duration: 0.05, type: 'sine', decay: 8, volume: 0.5 },
             { freq: 880, duration: 0.1, type: 'sine', decay: 5, volume: 0.7 },
@@ -506,7 +506,7 @@ async function initAudio() {
         ]);
         messageSoundBuffer = messageBuffer;
 
-        // Create typing sound — tiny cheerful blip
+        
         const typingBuffer = await createRichSound([
             { freq: 880, duration: 0.03, type: 'sine', decay: 20, volume: 0.35 },
             { freq: 1320, duration: 0.02, type: 'triangle', decay: 25, volume: 0.15 },
@@ -549,7 +549,7 @@ async function createRichSound(layers) {
         }
     }
 
-    // Normalize
+    
     let maxVal = 0;
     for (let i = 0; i < maxLength; i++) {
         maxVal = Math.max(maxVal, Math.abs(data[i]));
@@ -587,9 +587,9 @@ function playMessageSentSound() {
     playSound(messageSoundBuffer, 0.15);
 }
 
-// ============================================
-// EMOJI EXPLOSION
-// ============================================
+
+
+
 function createEmojiExplosion(x, y) {
     if (!EFFECTS_CONFIG.enableEmojiExplosions) return;
 
@@ -617,21 +617,21 @@ function createEmojiExplosion(x, y) {
     }
 }
 
-// ============================================
-// UI SETUP
-// ============================================
+
+
+
 function setupPresetButtons(careerId) {
     const presetsContainer = document.getElementById('chat-presets');
     const pt = (typeof I18N !== 'undefined') ? I18N.t : (k) => k;
 
-    // Try i18n presets first; fall back to empty
+    
     const presets = [0, 1, 2].map(i => {
       const key = 'preset.' + careerId + '.' + i;
       return pt(key, null);
     }).filter(Boolean);
 
     if (presets.length === 0) {
-      // fallback to default presets from i18n
+      
       [0, 1, 2].forEach(i => {
         const key = 'preset.default.' + i;
         const val = pt(key, null);
@@ -647,7 +647,7 @@ function setupPresetButtons(careerId) {
         btn.addEventListener('click', () => {
             if (isWaitingForResponse) return;
 
-            // Visual feedback
+            
             btn.style.transform = 'scale(0.95)';
             setTimeout(() => btn.style.transform = '', 150);
 
@@ -661,7 +661,7 @@ function setupEventListeners() {
     const input = document.getElementById('chat-input');
     const sendBtn = document.getElementById('chat-send');
 
-    // Remove old listeners
+    
     const newInput = input.cloneNode(true);
     const newSendBtn = sendBtn.cloneNode(true);
     input.parentNode.replaceChild(newInput, input);
@@ -671,7 +671,7 @@ function setupEventListeners() {
         if (e.key === 'Enter' && !isWaitingForResponse) {
             const message = newInput.value.trim();
             if (message) {
-                // Ripple effect on send button
+                
                 const rect = newSendBtn.getBoundingClientRect();
                 burstParticles(8, '#FF6B6B', rect.left + rect.width / 2, rect.top + rect.height / 2);
 
@@ -718,16 +718,16 @@ function setupScrollToBottom() {
     });
 }
 
-// ============================================
-// MESSAGE HANDLING
-// ============================================
+
+
+
 function addMessage(role, content, animate = true) {
     const messagesContainer = document.getElementById('chat-messages');
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${role}`;
     messageDiv.innerHTML = formatMessage(content);
 
-    // Add timestamp
+    
     const timeDiv = document.createElement('div');
     timeDiv.className = 'message-time';
     const now = new Date();
@@ -739,7 +739,7 @@ function addMessage(role, content, animate = true) {
         statusSpan.innerHTML = '<span class="check">鉁?/span>';
         timeDiv.appendChild(statusSpan);
 
-        // Animate to delivered
+        
         setTimeout(() => {
             statusSpan.className = 'message-status delivered';
             statusSpan.innerHTML = '<span class="check">✓✓</span>';
@@ -780,7 +780,7 @@ function addMessageWithTypewriter(role, content, showTimestamp = true) {
                 messageDiv.classList.remove('typing');
                 messageDiv.innerHTML = formatMessage(originalContent);
 
-                // Add timestamp after typing (unless suppressed)
+                
                 if (showTimestamp) {
                     const timeDiv = document.createElement('div');
                     timeDiv.className = 'message-time';
@@ -798,16 +798,16 @@ function addMessageWithTypewriter(role, content, showTimestamp = true) {
 }
 
 function formatMessage(text) {
-    // URL auto-linking
+    
     text = text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color: inherit; text-decoration: underline;">$1</a>');
 
-    // Bold
+    
     text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 
-    // Italic
+    
     text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
 
-    // Code
+    
     text = text.replace(/`(.*?)`/g, '<code style="background: rgba(0,0,0,0.1); padding: 2px 6px; border-radius: 6px; font-family: monospace;">$1</code>');
 
     return text;
@@ -837,25 +837,25 @@ function removeTypingIndicator() {
     if (indicator) indicator.remove();
 }
 
-// ============================================
-// STREAMING CHAT
-// ============================================
+
+
+
 async function sendMessage(message) {
     if (!currentCareer || isWaitingForResponse) return;
 
-    // Play sound and effects
+    
     playMessageSentSound();
 
-    // Resume audio context on user interaction
+    
     if (audioContext && audioContext.state === 'suspended') {
         await audioContext.resume();
     }
 
-    // Add user message
+    
     addMessage('user', message);
     conversationHistory.push({ role: 'user', content: message });
 
-    // Show typing indicator
+    
     showTypingIndicator();
 
     isWaitingForResponse = true;
@@ -864,14 +864,14 @@ async function sendMessage(message) {
     sendBtn.disabled = true;
     input.disabled = true;
 
-    // Glitch effect on button
+    
     if (EFFECTS_CONFIG.enableGlitchEffect) {
         sendBtn.classList.add('glitch');
         setTimeout(() => sendBtn.classList.remove('glitch'), 500);
     }
 
     try {
-        // Cancel any ongoing request
+        
         if (currentAbortController) {
             currentAbortController.abort();
         }
@@ -886,9 +886,9 @@ async function sendMessage(message) {
             body: JSON.stringify({
                 model: DEEPSEEK_CONFIG.model,
                 messages: conversationHistory,
-                max_tokens: 1000,  // Increased from 150 to allow more detailed responses
-                temperature: 0.8,  // Slightly increased for more creative responses
-                stream: true // Enable streaming!
+                max_tokens: 1000,  
+                temperature: 0.8,  
+                stream: true 
             }),
             signal: currentAbortController.signal
         });
@@ -897,17 +897,17 @@ async function sendMessage(message) {
             throw new Error(`API error: ${response.status}`);
         }
 
-        // Remove typing indicator
+        
         removeTypingIndicator();
 
-        // Create message bubble for streaming
+        
         const messagesContainer = document.getElementById('chat-messages');
         const messageDiv = document.createElement('div');
         messageDiv.className = 'message assistant streaming';
         messageDiv.id = 'streaming-message';
         messagesContainer.appendChild(messageDiv);
 
-        // Process stream
+        
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
         let fullContent = '';
@@ -931,7 +931,7 @@ async function sendMessage(message) {
                         if (content) {
                             charBuffer += content;
 
-                            // Stream characters for typewriter effect
+                            
                             while (charBuffer.length >= EFFECTS_CONFIG.streamChunkSize) {
                                 fullContent += charBuffer.slice(0, EFFECTS_CONFIG.streamChunkSize);
                                 charBuffer = charBuffer.slice(EFFECTS_CONFIG.streamChunkSize);
@@ -952,37 +952,37 @@ async function sendMessage(message) {
                             }
                         }
                     } catch (e) {
-                        // Ignore parse errors
+                        
                     }
                 }
             }
         }
 
-        // Flush remaining buffer
+        
         if (charBuffer) {
             fullContent += charBuffer;
             messageDiv.innerHTML = formatMessage(fullContent);
         }
 
-        // Finalize message
+        
         messageDiv.classList.remove('typing', 'streaming');
         messageDiv.id = '';
 
-        // Add timestamp
+        
         const timeDiv = document.createElement('div');
         timeDiv.className = 'message-time';
         const now = new Date();
         timeDiv.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
         messageDiv.appendChild(timeDiv);
 
-        // Burst particles on complete
+        
         const rect = messageDiv.getBoundingClientRect();
         burstParticles(15, '#4ECDC4', rect.left + rect.width / 2, rect.top + rect.height / 2);
 
-        // Add to history
+        
         conversationHistory.push({ role: 'assistant', content: fullContent });
 
-        // Trim history if too long
+        
         if (conversationHistory.length > 21) {
             conversationHistory = [
                 conversationHistory[0],
@@ -990,14 +990,14 @@ async function sendMessage(message) {
             ];
         }
 
-        // Emoji explosion on complete!
+        
         createEmojiExplosion(rect.left + rect.width / 2, rect.top);
 
     } catch (error) {
         console.error('Chat error:', error);
         removeTypingIndicator();
 
-        // Fallback response
+        
         const fallbackT = (typeof I18N !== 'undefined') ? I18N.t : (k) => '';
         const fallbacks = [
             fallbackT('chat.fallback1', null) || "That's a great question! Let me think... 馃",
@@ -1018,9 +1018,9 @@ async function sendMessage(message) {
     }
 }
 
-// ============================================
-// CLEANUP
-// ============================================
+
+
+
 window.addEventListener('beforeunload', () => {
     if (currentAbortController) {
         currentAbortController.abort();
@@ -1036,9 +1036,9 @@ window.addEventListener('beforeunload', () => {
     }
 });
 
-// ============================================
-// EXPORT (for potential module use)
-// ============================================
+
+
+
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { initChat, sendMessage };
 }

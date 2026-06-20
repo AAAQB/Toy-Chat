@@ -1,4 +1,4 @@
-// ar.js — AR recognition module
+
 
 const CAREERS = {
   0: { id: 'programmer', name: 'Programmer'    },
@@ -17,9 +17,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const target = document.querySelector(`#ar-target-${index}`);
       if (!target) return;
 
-      // Toy recognised — trigger chat
+      
       target.addEventListener('targetFound', () => {
-        // Hide old AR character's image & shadow, keep new one visible
+        
         Object.keys(CAREERS).forEach(otherIdx => {
           if (otherIdx !== index) {
             const oldEnt = document.querySelector(`#ar-target-${otherIdx}`);
@@ -41,14 +41,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-      // Toy left camera view — keep everything visible, do nothing
+      
 
-      // Toy left camera view — keep everything visible, do nothing
-      // target.addEventListener('targetLost', () => {
-      //   if (typeof onCareerLost === 'function') {
-      //     onCareerLost();
-      //   }
-      // });
+      
+      
+      
+      
+      
+      
     });
   });
 });

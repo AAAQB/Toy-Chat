@@ -26,7 +26,7 @@
 
   <script src="../js/i18n.js"></script>
   <script>
-    // Icons for each career's "does" items
+    
     const DOES_ICONS = {
       programmer: ['🖥️', '🎮', '🐛'],
       police:     ['🚔', '🔍', '🤝'],
@@ -59,10 +59,10 @@
       const localizedName = t('career.' + cId, null) || c.name;
       const localizedTag = t('tag.' + c.tagKey, null) || c.tag;
 
-      // Intro from i18n
+      
       const intro = t('intro.' + cId, null) || '';
 
-      // Does items from i18n
+      
       const icons = DOES_ICONS[id] || ['📌', '📌', '📌'];
       const does = icons.map((icon, i) => {
         const title = t('does.do_title.' + cId + '.' + i, null) || '';
@@ -70,7 +70,7 @@
         return { icon, title, desc };
       });
 
-      // Facts from i18n
+      
       const facts = [0, 1, 2].map(i => t('fact.' + cId + '.' + i, null) || '');
 
       document.getElementById('career-hero').innerHTML = `
@@ -108,11 +108,11 @@
       `;
     }
 
-    // Wait for DOM + i18n init, then render
+    
     function waitAndRender() {
-      // i18n init() must have run — check by seeing if locale was set from localStorage
+      
       if (typeof I18N !== 'undefined' && I18N.getLocale) {
-        // Give i18n init() a chance to run if it's waiting for DOMContentLoaded
+        
         if (document.readyState === 'loading') {
           document.addEventListener('DOMContentLoaded', function onDcl() {
             document.removeEventListener('DOMContentLoaded', onDcl);
@@ -127,7 +127,7 @@
     }
     waitAndRender();
 
-    // Re-render on language change
+    
     window.addEventListener('localechange', renderCareer);
   </script>
 
