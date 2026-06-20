@@ -124,4 +124,4 @@ This project is provided for educational and demonstration purposes.
 
 ---
 
-> **Brighten · For Bright Futures**
+
